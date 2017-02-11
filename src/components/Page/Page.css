@@ -1,0 +1,19 @@
+.vertical-container {
+  background:#eee;
+  height: 500px;
+
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+
+.vertical-box {
+  background: #FFF;
+  padding: 3rem;
+  width: 20%;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+}
