@@ -1,0 +1,16 @@
+.App-header {
+  position:fixed;
+  top:0px;
+  margin: 0px auto;
+  z-index:100000;
+  width:100%;
+  background:#FFFFFF;
+  border:1px solid #CCC;
+  height: 50px;
+}
+
+.App-header-cont {
+    width:100%;
+    position:fixed;
+    top:0px;
+}
