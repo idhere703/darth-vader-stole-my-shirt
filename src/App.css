@@ -18,12 +18,6 @@
   display: flex;
 }
 
-.box {
-  width: 200px;
-  height: 200px;
-  margin: auto;
-}
-
 body {
     margin:0px;
     background:#FFFFFF;
