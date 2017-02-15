@@ -1,14 +1,15 @@
 .vertical-container {
   background:#eee;
   height: 500px;
-
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
   align-items: center;
-  justify-content:center;
 }
 
 .vertical-box {
-  background: #FFF;
+  background: #FFFFFF;
   padding: 3rem;
   width: 20%;
   text-align: center;

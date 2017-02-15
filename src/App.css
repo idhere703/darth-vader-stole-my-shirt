@@ -1,8 +1,8 @@
 .App {
   text-align: center;
   width:960px;
-  background: #F0F0F0;
-  border: 1px solid #CCC;
+  background: #eee;
+  border: 1px solid #eee;
   height: 2000px;
   margin: 70px auto;
 }
@@ -28,7 +28,7 @@
 
 body {
     margin:0px;
-    background:#000;
+    background:#FFFFFF;
 }
 
 @keyframes App-logo-spin {
