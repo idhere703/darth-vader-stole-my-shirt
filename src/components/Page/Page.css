@@ -1,6 +1,5 @@
 .vertical-container {
   background:#eee;
-  height: 500px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
