@@ -9,9 +9,9 @@ class Page extends Component {
       <Content>
         <div className="content">
           <div className="vertical-container">
-            {lines.map((text) => {
+            {lines.map((text, index) => {
               return (
-                <div className="vertical-box">
+                <div key={index} className="vertical-box">
                   {text}
                 </div>
               );
