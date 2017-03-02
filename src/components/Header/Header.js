@@ -11,6 +11,12 @@ class Header extends React.Component {
         <div className="App-header-social">
           <i className="fa fa-facebook-square" aria-hidden="true"></i>
         </div>
+        <div className="App-header-social">
+          <i className="fa fa-github-square" aria-hidden="true"></i>
+        </div>
+        <div className="App-header-social">
+          <i className="fa fa-instagram" aria-hidden="true"></i>
+        </div>
       </div>
     );
   }
