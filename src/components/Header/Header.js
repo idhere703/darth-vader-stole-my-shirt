@@ -1,5 +1,7 @@
 import React from 'react';
 import './Header.css';
+import Link from '../Link/Link';
+import socialLinks from '../../data/socialMediaLinks';
 
 class Header extends React.Component {
   render() {
@@ -9,16 +11,16 @@ class Header extends React.Component {
           <h1>Darth Vader Stole My Shirt</h1>
         </div>
         <div className="App-header-social">
-          <i className="fa fa-facebook-square" aria-hidden="true"></i>
+          <Link linkDest={socialLinks.facebook}><i className="fa fa-facebook-square" aria-hidden="true"></i></Link>
         </div>
         <div className="App-header-social">
-          <i className="fa fa-github-square" aria-hidden="true"></i>
+          <Link linkDest={socialLinks.github}><i className="fa fa-github-square" aria-hidden="true"></i></Link>
         </div>
         <div className="App-header-social">
-          <i className="fa fa-instagram" aria-hidden="true"></i>
+          <Link linkDest={socialLinks.instagram}><i className="fa fa-instagram" aria-hidden="true"></i></Link>
         </div>
         <div className="App-header-social">
-          <i className="fa fa-snapchat" aria-hidden="true"></i>
+          <Link linkDest={socialLinks.snapchat}><i className="fa fa-snapchat" aria-hidden="true"></i></Link>
         </div>
       </div>
     );

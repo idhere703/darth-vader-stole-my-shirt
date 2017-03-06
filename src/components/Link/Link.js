@@ -7,7 +7,7 @@ class Link extends Component {
   }
   render() {
     return (
-      <a className="Link" href={this.props.linkDest}>
+      <a className="Link" target="_blank" href={this.props.linkDest}>
         {this.props.children}
       </a>
     );
