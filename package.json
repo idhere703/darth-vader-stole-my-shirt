@@ -8,6 +8,7 @@
   "dependencies": {
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-scripts": "^0.8.5",
     "react-scrollspy": "^2.6.4"
   },
   "scripts": {
