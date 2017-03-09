@@ -6,7 +6,10 @@
     "react-scripts": "0.8.5"
   },
   "dependencies": {
+    "moment": "^2.17.1",
     "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-datepicker": "^0.41.1",
     "react-dom": "^15.4.2",
     "react-scripts": "^0.8.5",
     "react-scrollspy": "^2.6.4"
