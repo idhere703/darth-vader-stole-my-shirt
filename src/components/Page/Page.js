@@ -5,13 +5,14 @@ import DateSelector from '../DatePicker/DatePicker';
 class Page extends Component {
   render() {
     return (
-      <Content>
-        <div>
+      <div className="Page">
+        <Content>
           <div className="vertical-container">
             <DateSelector></DateSelector>
           </div>
-        </div>
-      </Content>
+        </Content>
+      </div>
+
     );
   }
 }

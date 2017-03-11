@@ -3,6 +3,7 @@
   background: #eee;
   border: 1px solid #eee;
   margin: 0px auto;
+  width: 960px;
 }
 
 .App-logo {
@@ -16,6 +17,7 @@
 
 .container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 body {
