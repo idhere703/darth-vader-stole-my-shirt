@@ -8,7 +8,7 @@ class Page extends Component {
       <div className="Page">
         <Content>
           <div className="vertical-container">
-            // <DateSelector></DateSelector>
+            {/*<DateSelector></DateSelector>*/}
           </div>
         </Content>
       </div>
