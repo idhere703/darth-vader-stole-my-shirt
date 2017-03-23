@@ -21,7 +21,7 @@ closeNav() {
     return (
       <div>
         <div id="sidenav" className="sidenav">
-          <Link linkDest="javascript:void(0)" className="closebtn" onClick={this.closeNav}>&times;</Link>
+          <Link linkDest="#" className="closebtn" onClick={this.closeNav}>&times;</Link>
           <Link linkDest="http://lmgtfy.com/?q=where+am+i">Where Am I?</Link>
         </div>
         <span className="open-sidebar" onClick={this.openNav}>&#9776; Open</span>

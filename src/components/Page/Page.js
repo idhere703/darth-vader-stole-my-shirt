@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Page.css'
 import Content from '../Content/Content';
-import DateSelector from '../DatePicker/DatePicker';
+// import DateSelector from '../DatePicker/DatePicker';
 import Calendar from '../Calendar/Calendar';
 
 class Page extends Component {
