@@ -1,3 +1,12 @@
+/* 
+  black: #342E37
+  blue: #3C91E6
+  green: #A2D729
+  white: #FAFFFD
+  orange?: #FA824C
+  ^^ Not sure about including that one. Perhaps a halloween color?
+*/
+
 body {
   background-color: #FAFFFD;
   margin: 40px auto;
