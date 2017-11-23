@@ -10,4 +10,13 @@ utils.showText = (target, message, index, interval) => {
     }
 };
 
+utils.watchForSpacebar = (target, fn) => {
+    $(target).keyup((evt) => {
+        // Spacebar.
+        if (evt.keyCode === 32) {
+            fn(evt);
+        }
+    });
+};
+
 export default utils;

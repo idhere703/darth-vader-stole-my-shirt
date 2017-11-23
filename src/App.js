@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 import './App.css';
 import Utils from './components/utils';
 
@@ -10,14 +9,6 @@ class App extends Component {
     setTimeout(() => {
       Utils.showText('#bullcrap', `And it loads so quickly!`, 0, 100);
     }, 1800);
-
-    $(document).keyup((evt) => {
-      // Spacebar.
-      if (evt.keyCode === 32) {
-        console.log('Space?')
-      }
-    });
-
   }
 
   render() {
