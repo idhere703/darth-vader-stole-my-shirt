@@ -16,6 +16,7 @@ class App extends Component {
       <div>
         <h1 id="header"></h1>
         <p id="bullcrap"></p>
+        <img alt="gif" src="https://media.giphy.com/media/Su4ZK5TTfTKQo/giphy.gif" />
       </div>
       );
   }
