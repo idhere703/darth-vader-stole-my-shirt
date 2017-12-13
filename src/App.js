@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Utils from './components/utils';
+import Calendar from './components/calendar';
 
 
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
         <h1 id="header"></h1>
         <p id="bullcrap"></p>
         <img alt="gif" src="https://media.giphy.com/media/Su4ZK5TTfTKQo/giphy.gif" />
+        <Calendar />
       </div>
       );
   }
