@@ -1,6 +1,7 @@
 import $ from 'jquery';
 const utils = {};
 
+// This ought to annoy the crap out of anyone reading it.
 utils.showText = (target, message, index, interval) => {
     if (index < message.length) {
         $(target).append(message[index++]);
