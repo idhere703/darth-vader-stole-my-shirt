@@ -1,0 +1,12 @@
+{
+    "movement": [
+        "N",
+        "S",
+        "E",
+        "W"
+    ],
+    "init": {
+        "desc": "There are things here",
+        "move": [0, 2]
+    }
+}
