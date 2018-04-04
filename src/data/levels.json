@@ -5,8 +5,10 @@
         "E",
         "W"
     ],
-    "init": {
-        "desc": "There are things here",
-        "move": [0, 2]
+    "rooms": {
+        "init": {
+            "desc": "There are things here",
+            "move": [0, 2]
+        }
     }
 }
