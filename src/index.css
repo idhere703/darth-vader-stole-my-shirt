@@ -16,6 +16,31 @@ body {
   color: #342E37;
   padding: 0 10px
 }
+
 h1, h2, h3 {
   line-height: 1.2
+}
+
+.header {
+  text-align: center;
+}
+
+.g-window {
+  background-color: #342E37;
+  color: #A2D729;
+  overflow: scroll;
+  height: 20em;
+}
+
+.g-window__content {
+  margin: 15px;
+}
+
+p img {
+  animation: fadein 2s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
