@@ -15,7 +15,7 @@ function AppView(props) {
 
 function TitleImg(props) {
   return (
-    <img className={props.classes} src={props.src} />
+    <img className={props.classes} src={props.src} role="presentation" />
   );
 }
 

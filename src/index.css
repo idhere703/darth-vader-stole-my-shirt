@@ -38,6 +38,11 @@ h1, h2, h3 {
   width: 10em;
 }
 
+.world__content {
+  overflow: scroll;
+  height: 250px;
+}
+
 p img {
   animation: fadein 2s;
 }
