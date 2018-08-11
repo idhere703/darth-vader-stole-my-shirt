@@ -9,6 +9,9 @@
 
 body {
   background-color: #FAFFFD;
+  background-image: url('./res/paper-backround.jpg');
+  background-repeat:no-repeat;
+  background-size:cover;
   margin: 40px auto;
   max-width: 650px;
   line-height: 1.6;
@@ -21,19 +24,18 @@ h1, h2, h3 {
   line-height: 1.2
 }
 
-.header {
+.app__header {
   text-align: center;
+  margin: 0em;
 }
 
-.g-window {
-  background-color: #342E37;
-  color: #A2D729;
-  overflow: scroll;
-  height: 20em;
+.app__title--container {
+  text-align: center;
+  margin-top: -2em;
 }
 
-.g-window__content {
-  margin: 15px;
+.app__title--img {
+  width: 10em;
 }
 
 p img {

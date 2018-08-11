@@ -1,16 +1,16 @@
 import AppView from '../views/AppView';
 import { Container } from 'flux/utils';
-import NavStore from '../data/NavStore';
+import WorldStore from '../data/WorldStore';
 
 function getStores() {
     return [
-        NavStore,
+        WorldStore,
     ];
 }
 
 function getState() {
     return {
-        world: NavStore.getState(),
+        world: WorldStore.getState(),
     };
 }
 
