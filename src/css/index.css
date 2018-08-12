@@ -9,8 +9,7 @@
 
 body {
   background-color: #FAFFFD;
-  background-image: url('./res/paper-backround.jpg');
-  background-repeat:no-repeat;
+  background-image: url('../res/paper-backround.jpg');
   background-size:cover;
   margin: 40px auto;
   max-width: 650px;
@@ -22,25 +21,6 @@ body {
 
 h1, h2, h3 {
   line-height: 1.2
-}
-
-.app__header {
-  text-align: center;
-  margin: 0em;
-}
-
-.app__title--container {
-  text-align: center;
-  margin-top: -2em;
-}
-
-.app__title--img {
-  width: 10em;
-}
-
-.world__content {
-  overflow: scroll;
-  height: 250px;
 }
 
 p img {

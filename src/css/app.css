@@ -1,0 +1,40 @@
+.app__header {
+    text-align: center;
+    margin: 0em;
+  }
+  
+  .app__title--container {
+    text-align: center;
+    margin-top: -2em;
+  }
+  
+  .app__title--img {
+    width: 10em;
+  }
+  
+  .app__sidebar--character {
+    position: absolute;
+    top: 0em;
+    left: 65em;
+    right: 0em;
+    bottom: 0em;
+  }
+  
+  .app__sidebar--items {
+    position: absolute;
+    top: 0em;
+    left: 0em;
+    right: 65em;
+    bottom: 0em;
+  }
+  
+  .app__sidebar--char-link {
+    cursor: pointer;
+    color: #3C91E6;
+    text-align: center;
+  }
+  
+  .app__sidebar--character-divider {
+    width: 6em;
+    margin-top: -10px;
+  }

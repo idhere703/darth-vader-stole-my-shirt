@@ -16,7 +16,8 @@
     "react-datepicker": "^0.41.1",
     "react-dom": "^15.4.2",
     "react-scripts": "^0.8.5",
-    "react-scrollspy": "^2.6.4"
+    "react-scrollspy": "^2.6.4",
+    "react-sidebar": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
