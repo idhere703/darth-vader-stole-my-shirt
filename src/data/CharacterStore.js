@@ -3,25 +3,24 @@ import { ReduceStore } from 'flux/utils';
 import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
 
-class AppStore extends ReduceStore {
+class CharacterStore extends ReduceStore {
     constructor() {
         super(AppDispatcher);
     }
 
     getInitialState() {
-        return Immutable.OrderedMap({ open: false });
+        return Immutable.OrderedMap();
     }
 
     reduce(state, action) {
         switch (action.type) {
-            case AppActionTypes.OPEN_CHAR_SIDEBAR:
-                return state.set('char_open', action.open);
-            case AppActionTypes.OPEN_ITEM_SIDEBAR:
-                return state.set('item_open', action.open);
+            case AppActionTypes.CREATE_CHARACTER:
+                return state;
+
             default:
                 return state;
         }
     }
 }
 
-export default new AppStore();
+export default new CharacterStore();

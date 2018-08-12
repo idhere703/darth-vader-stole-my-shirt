@@ -1,5 +1,6 @@
 import React from 'react';
 import WorldView from './WorldView';
+import CharacterView from './CharacterView';
 import HeaderTitle from '../res/titleDivider0.png';
 import CharacterTitle from '../res/characterDivider.png';
 import styles from './components/styles/React-Sidebar-Styles';
@@ -7,7 +8,7 @@ import TitleImgWrapper from './components/TitleImg';
 import Sidebar from './components/Sidebar';
 
 function AppView(props) {
-  const charSideBarContent = <CharacterSidebar />;
+  const charSideBarContent = <CharacterView { ...props } />;
   return (
       <div>
         <h1 id="header" className="app__header">Darth Vader Stole My Shirt</h1>
@@ -15,21 +16,14 @@ function AppView(props) {
         <div className='app__sidebar--character'>
           <Sidebar
             content={charSideBarContent}
-            onSetSidebarOpen={props.openSideBar}
-            sidebarOpen={props.appInfo.get('open')} 
+            onSetSidebarOpen={props.openCharSideBar}
+            sidebarOpen={props.appInfo.get('char_open')} 
             isRight={true}
             styles={styles}
           >
-              <CharacterLink onSetSidebarOpen={props.openSideBar} />
+              <CharacterLink onSetSidebarOpen={props.openCharSideBar} />
           </Sidebar>
         </div>
-        {/* <div className='app__sidebar--items'>
-          <Sidebar
-            onSetSidebarOpen={props.openSideBar}
-            sidebarOpen={props.appInfo.get('open')}
-            isRight={true}
-            styles={styles} />
-        </div> */}
         <WorldView { ...props } />
       </div>
       );
@@ -42,16 +36,6 @@ function CharacterLink(props) {
         Character
       </div>
       <TitleImgWrapper src={CharacterTitle} classes={'app__sidebar--character-divider'} />
-    </div>
-  );
-}
-
-
-
-function CharacterSidebar(props) {
-  return (
-    <div className='character__container'> 
-      <b>Sidebar content</b>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WorldView() {
+function WorldView(props) {
     return (
         <div className="world__content">
             Cupcake ipsum dolor. Sit amet cupcake marzipan pastry toffee cheesecake. Donut lollipop cupcake lemon drops. Toffee powder icing icing lemon drops cheesecake. Tiramisu macaroon powder cupcake bear claw cake fruitcake. Sweet soufflé chocolate cake biscuit oat cake gummies carrot cake. Ice cream tart wafer topping. Icing sesame snaps sesame snaps. Jelly jujubes chupa chups chocolate cake brownie sweet jujubes. Halvah cupcake danish cupcake chocolate cake powder. Pudding toffee tiramisu muffin liquorice. Oat cake sweet candy canes pie.
