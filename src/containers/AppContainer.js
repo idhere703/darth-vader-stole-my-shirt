@@ -15,11 +15,12 @@ function getStores() {
 
 function getState() {
   return {
-    world: WorldStore.getState(),
+    worldInfo: WorldStore.getState(),
     appInfo: AppStore.getState(),
-    character: CharacterStore.getState(),
+    characterInfo: CharacterStore.getState(),
     openCharSideBar: AppActions.openChar,
-    openItemSideBar: AppActions.openItems
+    openItemSideBar: AppActions.openItems,
+    createWorld: AppActions.createWorld
   };
 }
 

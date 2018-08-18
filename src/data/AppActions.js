@@ -13,6 +13,12 @@ const Actions = {
       type: AppActionTypes.OPEN_ITEM_SIDEBAR,
       open
     });
+  },
+  createWorld(seed) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.CREATE_WORLD,
+      seed
+    });
   }
 };
 
