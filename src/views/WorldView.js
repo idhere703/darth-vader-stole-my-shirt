@@ -1,8 +1,8 @@
 import React from 'react';
 
 function WorldView(props) {
-    return (
-        <div className="world__content">
+  return (
+    <div className="world__content">
             Cupcake ipsum dolor. Sit amet cupcake marzipan pastry toffee cheesecake. Donut lollipop cupcake lemon drops. Toffee powder icing icing lemon drops cheesecake. Tiramisu macaroon powder cupcake bear claw cake fruitcake. Sweet soufflé chocolate cake biscuit oat cake gummies carrot cake. Ice cream tart wafer topping. Icing sesame snaps sesame snaps. Jelly jujubes chupa chups chocolate cake brownie sweet jujubes. Halvah cupcake danish cupcake chocolate cake powder. Pudding toffee tiramisu muffin liquorice. Oat cake sweet candy canes pie.
 
 Gummies candy canes lollipop dragée donut liquorice chocolate cake fruitcake. Apple pie gingerbread cotton candy cake brownie pastry. Cake soufflé cheesecake biscuit donut. Pie topping marshmallow toffee donut jujubes chupa chups candy canes cotton candy. Fruitcake jelly-o marshmallow chocolate cake soufflé caramels fruitcake. Sweet biscuit sweet roll muffin donut cake. Fruitcake jelly beans fruitcake jelly-o bear claw pudding. Chupa chups sugar plum pastry. Dragée cheesecake fruitcake marshmallow tart cookie. Donut apple pie cake bear claw pastry chocolate chocolate bar wafer caramels. Brownie halvah soufflé sweet lemon drops muffin halvah cake sesame snaps. Gingerbread jujubes bonbon jelly beans bonbon biscuit cotton candy cheesecake liquorice. Fruitcake pudding oat cake cookie muffin wafer marzipan. Marshmallow jelly-o biscuit gingerbread cupcake.
@@ -102,8 +102,8 @@ Candy canes cookie bear claw. Candy cake chocolate gummi bears lemon drops candy
 Dragée croissant cake croissant soufflé liquorice gingerbread halvah. Gingerbread gummi bears liquorice halvah ice cream halvah. Tart jelly pie liquorice chocolate bar tootsie roll. Gummi bears macaroon cake marzipan toffee. Biscuit danish tart cotton candy macaroon pie gummi bears. Liquorice marzipan jelly-o cookie chupa chups halvah jujubes chocolate bonbon. Jelly cotton candy gingerbread jelly-o bonbon. Lollipop cake sweet roll cotton candy macaroon dragée. Chocolate cake cheesecake gummi bears brownie topping sugar plum. Biscuit marzipan chocolate bar croissant sesame snaps donut carrot cake ice cream danish. Biscuit sugar plum gummi bears oat cake sweet roll. Danish pudding cake chupa chups.
 
 Chupa chups chocolate bar topping. Tootsie roll jujubes wafer cheesecake liquorice chupa chups wafer lemon drops. Tootsie roll wafer halvah bear claw carrot cake. Biscuit lemon drops danish sesame snaps cake. Marzipan chocolate cake cake jelly-o powder macaroon. Jelly beans ice cream jelly jelly topping dessert bonbon jelly danish. Macaroon dessert dessert cotton candy. Muffin cookie wafer lemon drops chocolate sweet. Pudding sweet wafer gingerbread jujubes halvah donut. Dragée brownie dragée apple pie pie topping oat cake jelly beans. Liquorice dessert jelly beans liquorice cupcake donut. Soufflé tootsie roll lollipop wafer ice cream dessert. Cheesecake gummies wafer macaroon pie pastry.
-        </div>
-    );
+    </div>
+  );
 }
 
 export default WorldView;

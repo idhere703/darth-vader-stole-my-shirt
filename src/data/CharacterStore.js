@@ -4,23 +4,23 @@ import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
 
 class CharacterStore extends ReduceStore {
-    constructor() {
-        super(AppDispatcher);
-    }
+  constructor() {
+    super(AppDispatcher);
+  }
 
-    getInitialState() {
-        return Immutable.OrderedMap();
-    }
+  getInitialState() {
+    return Immutable.OrderedMap();
+  }
 
-    reduce(state, action) {
-        switch (action.type) {
-            case AppActionTypes.CREATE_CHARACTER:
-                return state;
+  reduce(state, action) {
+    switch (action.type) {
+      case AppActionTypes.CREATE_CHARACTER:
+        return state;
 
-            default:
-                return state;
-        }
+      default:
+        return state;
     }
+  }
 }
 
 export default new CharacterStore();

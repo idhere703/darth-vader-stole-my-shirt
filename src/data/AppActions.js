@@ -2,18 +2,18 @@ import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
 
 const Actions = {
-    openChar(open) {
-        AppDispatcher.dispatch({
-            type: AppActionTypes.OPEN_CHAR_SIDEBAR,
-            open,
-        });
-    },
-    openItems(open) {
-        AppDispatcher.dispatch({
-            type: AppActionTypes.OPEN_ITEM_SIDEBAR,
-            open
-        });
-    }
+  openChar(open) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.OPEN_CHAR_SIDEBAR,
+      open,
+    });
+  },
+  openItems(open) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.OPEN_ITEM_SIDEBAR,
+      open
+    });
+  }
 };
 
 export default Actions;

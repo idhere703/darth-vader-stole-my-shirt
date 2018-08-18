@@ -1,7 +1,6 @@
-function sum(num, num0) {
-    return num0;
-}
 
-test('adds 1 + 2 to equal 3', () => {
-    expect(sum(1, 2)).toBe(3);
-  });
+
+test('Creates game grid', () => {
+  const map = createMap();
+  expect(Array.isArray(map)).toBe(true);
+});
