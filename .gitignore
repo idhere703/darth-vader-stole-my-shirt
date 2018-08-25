@@ -5,3 +5,4 @@ bower_components
 build
 .DS_Store
 yarn-error.log
+minion-config.*

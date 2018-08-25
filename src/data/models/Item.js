@@ -19,7 +19,7 @@ const Item = Immutable.Record({
   // A consumable object with stat increases.
   // Such as: { speed: 10, perception: 1 }
   stat_increase: {},
-  item_type: ItemType,
+  item_type: new ItemType({}),
   // Stat modifiers, only available for weapons and armor.
   // Object with status to modify, such as: { speed: 0.10, attack: 0.05 }
   stat_modifiers: {},
@@ -27,4 +27,4 @@ const Item = Immutable.Record({
   space: 1 // Amount of space an item takes up in inventory.
 });
 
-export default Item;
+export { Item, ItemType };

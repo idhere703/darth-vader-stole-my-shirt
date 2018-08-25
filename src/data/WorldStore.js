@@ -5,8 +5,8 @@ import AppDispatcher from './AppDispatcher';
 import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
-import Event from './models/Event';
 import Character from './models/Character';
+import Event from './models/Event';
 
 
 function createLocation(location = {}, event) {
@@ -37,10 +37,13 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
   let map = createArray(1, dimensions), // create a 2d array full of 1's
     currentRow = Math.floor(Math.random() * dimensions), // our current row - start at a random spot
     currentColumn = Math.floor(Math.random() * dimensions), // our current column - start at a random spot
+    current_location = [0,0],
+    charSet = false,
     directions = [[-1, 0], [1, 0], [0, -1], [0, 1]], // array to get a random direction from (left,right,up,down)
     lastDirection = [], // save the last direction we went
     randomDirection; // next turn/direction - holds a value from directions
   
+
   // lets create some tunnels - while maxTunnels, dimentions, and maxLength  is greater than 0.
   while (maxTunnels && dimensions && maxLength) {
   
@@ -72,7 +75,17 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
         break;
       } else {
         // TODO: Figure out events and passing them into create location.
-        map[currentRow][currentColumn] = createLocation(); //set the value of the index in map to 0 (a tunnel, making it one longer)
+        if (charSet === false) {
+          // Set initial character location. Make it a safe zone with no enemies.
+          map[currentRow][currentColumn] = createLocation({
+            safe_zone: true,
+            enemies: [],
+          });
+          current_location = [currentRow, currentColumn];
+          charSet = true;
+        } else {
+          map[currentRow][currentColumn] = createLocation({});
+        }
         currentRow += randomDirection[0]; //add the value from randomDirection to row and col (-1, 0, or 1) to update our location
         currentColumn += randomDirection[1];
         tunnelLength++; //the tunnel is now one longer, so lets increment that variable
@@ -84,26 +97,40 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
       maxTunnels--; // we created a whole tunnel so lets decrement how many we have left to create
     }
   }
-  return map;
+  return { map, current_location };
 };
 
 /**
-   * @param {Number} floors The total number of maps to build.
-   * @param {Character} character Character being populated into the world.
+   * @param {Object} seed Contains the seed data for the world.
+   * Floors: The total number of maps to build.
+   * Character: Character being populated into the world.
+   * Events: Special events that occur at random. Get removed as they are populated.
    * @returns {World} New world object.
 */
-function buildWorld(seed = { floors: 10, character: new Character({ class: 'Slime', max_health: 150, health: 150 }) }) {
+function buildWorld(seed) {
+  // If we are not passed a seed. Create one.
+  if (seed === undefined) {
+    seed = { // eslint-disable-line
+      floors: 10,
+      events: [],
+      character: new Character({
+        class: 'Slime', 
+        max_health: 150, 
+        health: 150
+      }),
+    };
+  }
   const areas = [];
   for (let i = 0; i < seed.floors; i++) {
+    const { map, current_location } = createMap(20, 50, 8, seed.events);
     areas.push(new Area({
       id: i,
-      map: createMap(20, 50, 8, [])
+      map,
+      current_location
     }));
   }
 
-  return new World({
-    areas
-  });
+  return new World({ areas });
 }
 
 

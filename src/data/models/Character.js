@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 
 const Character = Immutable.Record({
-  name: '',
+  name: 'Minion',
   class: 'Shapeless',
   level: 1,
   experience_points: 0,
@@ -29,7 +29,8 @@ const Character = Immutable.Record({
   skills: [], // Skills, require something to be used.
   drops: [], // On death, nothing dropped from unnamed foes and the character.
   possible_drops: [], // What's the possible drops.
-  experience_given: 0 // Given on death.
+  experience_given: 0, // Given on death.
+  current_floor: 0,
 });
 
 
