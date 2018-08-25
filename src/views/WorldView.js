@@ -4,9 +4,9 @@ import config from '../data/minion-config'; // Temp var in order to get content 
 
 function WorldView(props) {
   return (
-    <div className="world__content">
+    <section className="world__content">
       { config.storyline.events.intro }
-    </div>
+    </section>
   );
 }
 

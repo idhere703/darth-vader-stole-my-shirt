@@ -11,20 +11,26 @@ function AppView(props) {
   const charSideBarContent = <CharacterView { ...props } />;
   return (
     <div>
-      <h1 id="header" className="app__header">Darth Vader Stole My Shirt</h1>
-      <div className='app__title--container'><TitleImgWrapper src={HeaderTitle} classes='app__title--img' /></div>
-      <div className='app__sidebar--character'>
-        <Sidebar
-          content={charSideBarContent}
-          onSetSidebarOpen={props.openCharSideBar}
-          sidebarOpen={props.appInfo.get('char_open')} 
-          isRight={true}
-          styles={styles}
-        >
-          <CharacterLink onSetSidebarOpen={props.openCharSideBar} />
-        </Sidebar>
-      </div>
-      <WorldView { ...props } />
+      <header>
+        <h1 id="header" className="app__header">Darth Vader Stole My Shirt</h1>
+        <div className='app__title--container'><TitleImgWrapper src={HeaderTitle} classes='app__title--img' /></div>
+      </header>
+      <aside>
+        <section className='app__sidebar--character'>
+          <Sidebar
+            content={charSideBarContent}
+            onSetSidebarOpen={props.openCharSideBar}
+            sidebarOpen={props.appInfo.get('char_open')} 
+            isRight={true}
+            styles={styles}
+          >
+            <CharacterLink onSetSidebarOpen={props.openCharSideBar} />
+          </Sidebar>
+        </section>
+      </aside>
+      <main>
+        <WorldView { ...props } />
+      </main>
     </div>
   );
 }

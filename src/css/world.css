@@ -1,8 +1,8 @@
 .world__content {
     overflow: scroll;
-    height: 15em;
+    height: 12em;
     white-space: pre-line;
-    border-width: 50px;
+    border-width: 35px;
     border-style: solid;
     border-image: url('../res/content-border.svg') 25% round;
   }  

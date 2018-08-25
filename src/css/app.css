@@ -6,6 +6,7 @@
   .app__title--container {
     text-align: center;
     margin-top: -2em;
+    height: 4em;
   }
   
   .app__title--img {
