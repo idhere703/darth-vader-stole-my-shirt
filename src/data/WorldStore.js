@@ -5,7 +5,6 @@ import AppDispatcher from './AppDispatcher';
 import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
-import Character from './models/Character';
 import Event from './models/Event';
 
 
@@ -103,7 +102,6 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
 /**
    * @param {Object} seed Contains the seed data for the world.
    * Floors: The total number of maps to build.
-   * Character: Character being populated into the world.
    * Events: Special events that occur at random. Get removed as they are populated.
    * @returns {World} New world object.
 */
@@ -113,11 +111,6 @@ function buildWorld(seed) {
     seed = { // eslint-disable-line
       floors: 10,
       events: [],
-      character: new Character({
-        class: 'Slime', 
-        max_health: 150, 
-        health: 150
-      }),
     };
   }
   const areas = [];
@@ -130,7 +123,7 @@ function buildWorld(seed) {
     }));
   }
 
-  return new World({ areas });
+  return { world: new World({ areas }) };
 }
 
 
@@ -140,7 +133,7 @@ class WorldStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap();
+    return Immutable.OrderedMap(buildWorld());
   }
 
   reduce(state, action) {

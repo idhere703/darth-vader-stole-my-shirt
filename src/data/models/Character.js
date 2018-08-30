@@ -1,8 +1,9 @@
 import Immutable from 'immutable';
 
 const Character = Immutable.Record({
-  name: 'Minion',
+  name: 'Formless',
   class: 'Shapeless',
+  description: 'A shapeless being given no form; cursed by this land.',
   level: 1,
   experience_points: 0,
   needed_exp: 150,

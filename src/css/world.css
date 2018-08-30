@@ -6,3 +6,6 @@
     border-style: solid;
     border-image: url('../res/content-border.svg') 25% round;
   }  
+
+.world__actions {
+}

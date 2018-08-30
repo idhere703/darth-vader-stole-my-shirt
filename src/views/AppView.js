@@ -1,14 +1,12 @@
 import React from 'react';
 import WorldView from './WorldView';
-import CharacterView from './CharacterView';
 import HeaderTitle from '../res/titleDivider0.png';
-import CharacterTitle from '../res/characterDivider.png';
-import styles from './components/styles/React-Sidebar-Styles';
+// import CharacterTitle from '../res/characterDivider.png';
+// import styles from './components/styles/React-Sidebar-Styles';
 import TitleImgWrapper from './components/TitleImg';
-import Sidebar from './components/Sidebar';
+// import Sidebar from './components/Sidebar';
 
 function AppView(props) {
-  const charSideBarContent = <CharacterView { ...props } />;
   return (
     <div>
       <header>
@@ -16,7 +14,7 @@ function AppView(props) {
         <div className='app__title--container'><TitleImgWrapper src={HeaderTitle} classes='app__title--img' /></div>
       </header>
       <aside>
-        <section className='app__sidebar--character'>
+        {/* <section className='app__sidebar--character'>
           <Sidebar
             content={charSideBarContent}
             onSetSidebarOpen={props.openCharSideBar}
@@ -26,7 +24,7 @@ function AppView(props) {
           >
             <CharacterLink onSetSidebarOpen={props.openCharSideBar} />
           </Sidebar>
-        </section>
+        </section> */}
       </aside>
       <main>
         <WorldView { ...props } />
@@ -35,15 +33,15 @@ function AppView(props) {
   );
 }
 
-function CharacterLink(props) {
-  return (
-    <div className='app__sidebar--char-link'>
-      <div onClick={() => props.onSetSidebarOpen(true)}>
-        Character
-      </div>
-      <TitleImgWrapper src={CharacterTitle} classes={'app__sidebar--character-divider'} />
-    </div>
-  );
-}
+// function CharacterLink(props) {
+//   return (
+//     <div className='app__sidebar--char-link'>
+//       <div onClick={() => props.onSetSidebarOpen(true)}>
+//         Character
+//       </div>
+//       <TitleImgWrapper src={CharacterTitle} classes={'app__sidebar--character-divider'} />
+//     </div>
+//   );
+// }
 
 export default AppView;

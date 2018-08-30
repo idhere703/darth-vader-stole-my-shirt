@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
 import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
+import Character from './models/Character';
 
 class CharacterStore extends ReduceStore {
   constructor() {
@@ -9,7 +10,14 @@ class CharacterStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap();
+    return Immutable.OrderedMap({
+      character: new Character({
+        name: 'Minion',
+        class: 'Slime', 
+        max_health: 150, 
+        health: 150
+      }),
+    });
   }
 
   reduce(state, action) {
