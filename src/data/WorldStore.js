@@ -123,7 +123,7 @@ function buildWorld(seed) {
     }));
   }
 
-  return { world: new World({ areas }) };
+  return new World({ areas });
 }
 
 
@@ -133,7 +133,7 @@ class WorldStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap(buildWorld());
+    return Immutable.OrderedMap({ world: buildWorld() });
   }
 
   reduce(state, action) {
