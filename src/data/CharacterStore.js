@@ -3,7 +3,7 @@ import { ReduceStore } from 'flux/utils';
 import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
 import Character from './models/Character';
-import Item from './models/Item';
+import { Item } from './models/Item';
 
 class CharacterStore extends ReduceStore {
   constructor() {
