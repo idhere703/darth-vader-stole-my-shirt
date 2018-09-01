@@ -49,6 +49,8 @@ class CharacterStore extends ReduceStore {
           });
         }
         return state;
+      case AppActionTypes.REMOVE_ITEMS:
+        return state;
       default:
         return state;
     }

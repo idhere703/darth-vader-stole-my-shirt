@@ -47,7 +47,7 @@ describe('CharacterStore', function() {
     expect(state.getIn(['character', 'food'])).toBe(0);
   });
 
-  test('It adds items to the users inventory', function() {
+  test('It adds items to the user inventory', function() {
     const oldItemLength = state.getIn(['character', 'items']).length;
     const item = new Item();
     dispatch({
@@ -58,6 +58,17 @@ describe('CharacterStore', function() {
     const items = state.getIn(['character', 'items']);
     expect(items.length).toBeGreaterThan(oldItemLength);
     expect(items).toContain(item);
+  });
+
+  test('It removes items from the user inventory', function() {
+    const oldItems = state.getIn(['character', 'items']);
+    dispatch({
+      type: AppActions.REMOVE_ITEMS,
+      itemsToRemove: []
+    });
+
+    const items = state.getIn(['character', 'items']);
+    expect(items.length).toBeLessThan(oldItems.length);
   });
 
 });

@@ -10,6 +10,7 @@ const ItemType = Immutable.Record({
 });
 
 const Item = Immutable.Record({
+  id: 'manna',
   name: 'Manna',
   description: 'Manna from the heavens. Restores food and water.',
   food: 10,

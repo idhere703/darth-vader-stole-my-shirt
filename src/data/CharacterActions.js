@@ -22,7 +22,13 @@ const Actions = {
   addItems(items) {
     AppDispatcher.dispatch({
       type: AppActionTypes.ADD_ITEMS,
-      items
+      itemsToAdd: items
+    });
+  },
+  removeItems(items) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.REMOVE_ITEMS,
+      itemsToRemove: items
     });
   }
 };
