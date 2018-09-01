@@ -21,7 +21,7 @@ const Actions = {
   },
   addItems(items) {
     AppDispatcher.dispatch({
-      type: AppActionTypes.ADD_CHARACTER_ITEMS,
+      type: AppActionTypes.ADD_ITEMS,
       items
     });
   }

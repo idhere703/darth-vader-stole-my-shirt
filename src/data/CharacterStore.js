@@ -38,13 +38,17 @@ class CharacterStore extends ReduceStore {
       case AppActionTypes.CREATE_CHARACTER:
         return state.set('character', new Character(action.seed));
       case AppActionTypes.REDUCE_FOOD:
-        const newFoodChar = reduceProp(state.get('character'), 'food', action.food);
-        return state.set('character', newFoodChar);
+        return state.set('character', reduceProp(state.get('character'), 'food', action.food));
       case AppActionTypes.REDUCE_WATER:
-        const newWaterChar = reduceProp(state.get('character'), 'water', action.water);
-        return state.set('character', newWaterChar);
-      case AppActionTypes.ADD_CHARACTER_ITEMS:
-        return state.set();
+        return state.set('character', reduceProp(state.get('character'), 'water', action.water));
+      case AppActionTypes.ADD_ITEMS:
+        if (Array.isArray(action.itemsToAdd) === true) {
+          return state.updateIn(['character', 'items'], items => {
+            items.push(...action.itemsToAdd);
+            return items;
+          });
+        }
+        return state;
       default:
         return state;
     }
