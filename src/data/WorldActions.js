@@ -8,6 +8,18 @@ const Actions = {
       seed,
     });
   },
+  changeLocation(newLocation) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.CHANGE_LOCATION,
+      newLocation
+    });
+  },
+  changeFloor(newFloor) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.CHANGE_FLOOR,
+      newFloor
+    });
+  }
 };
 
 export default Actions;

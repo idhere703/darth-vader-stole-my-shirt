@@ -3,6 +3,7 @@ import { ReduceStore } from 'flux/utils';
 import AppActionTypes from './AppActionTypes';
 import AppDispatcher from './AppDispatcher';
 import Character from './models/Character';
+import Item from './models/Item';
 
 class CharacterStore extends ReduceStore {
   constructor() {
@@ -15,7 +16,9 @@ class CharacterStore extends ReduceStore {
         name: 'Minion',
         class: 'Slime', 
         max_health: 150, 
-        health: 150
+        health: 150,
+        items: [new Item(), new Item()],
+        dimensional_items: [new Item()]
       }),
     });
   }
@@ -24,7 +27,6 @@ class CharacterStore extends ReduceStore {
     switch (action.type) {
       case AppActionTypes.CREATE_CHARACTER:
         return state;
-
       default:
         return state;
     }

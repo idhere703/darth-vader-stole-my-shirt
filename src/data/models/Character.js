@@ -23,9 +23,10 @@ const Character = Immutable.Record({
   max_water: 100,
   water: 100,
   inventory_space: 30,
-  dimensional_inventory: 5,
+  dimensional_inventory_space: 5,
   max_party_size: 0, // This probably won't make it in.
-  equipment: [], // An array of items.
+  items: [], // An array of items.
+  dimensional_items: [], // An array of items.
   statuses: [], // Any special statuses.
   skills: [], // Skills, require something to be used.
   drops: [], // On death, nothing dropped from unnamed foes and the character.

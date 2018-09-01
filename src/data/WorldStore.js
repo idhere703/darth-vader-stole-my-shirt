@@ -5,8 +5,16 @@ import AppDispatcher from './AppDispatcher';
 import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
-import Event from './models/Event';
 
+function isValidLocation(location) {
+  return location !== undefined && location !== 1;
+}
+
+function getCurrentLocation(area, location) {
+  const locationIndex = location || area.get('current_location');
+  const map = area.get('map');
+  return map[locationIndex[0]] && map[locationIndex[0]][locationIndex[1]];
+}
 
 function createLocation(location = {}, event) {
   if (typeof event === 'object' && event !== null) return new Location(Object.assign({}, location, event));
@@ -79,6 +87,7 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
           map[currentRow][currentColumn] = createLocation({
             safe_zone: true,
             enemies: [],
+            id: 'spawn'
           });
           current_location = [currentRow, currentColumn];
           charSet = true;
@@ -118,12 +127,12 @@ function buildWorld(seed) {
     const { map, current_location } = createMap(20, 50, 8, seed.events);
     areas.push(new Area({
       id: i,
+      floor: i,
       map,
       current_location
     }));
   }
-
-  return new World({ areas });
+  return new World({ areas, current_floor: 0 });
 }
 
 
@@ -141,6 +150,18 @@ class WorldStore extends ReduceStore {
       case AppActionTypes.CREATE_WORLD:
         if (action.seed !== undefined) return state.set('world', buildWorld(action.seed));
         return state.set('world', buildWorld());
+      case AppActionTypes.CHANGE_FLOOR:
+        return state.setIn(['world', 'current_floor'], action.newFloor);
+      case AppActionTypes.CHANGE_LOCATION:
+        return state.updateIn(['world', 'areas'], areas => {
+          const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
+          // Only allow update if the space isn't blocked.
+          const currLoc = getCurrentLocation(areas[index], action.newLocation);
+          if (isValidLocation(currLoc)) {
+            areas[index] = areas[index].set('current_location', action.newLocation);
+          }
+          return areas;
+        });
       default:
         return state;
     }

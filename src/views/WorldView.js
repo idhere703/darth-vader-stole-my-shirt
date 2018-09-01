@@ -1,7 +1,5 @@
 import React from 'react';
 
-// import config from '../data/minion-config'; // Temp var in order to get content on the page.
-
 function getCurrentLocation(world) {
   const areas = world.get('areas');
   const currentArea = areas[world.get('current_floor')];
@@ -38,7 +36,6 @@ function WorldView(props) {
   let enemiesDescription = '';
   let itemsDescription = '';
   if (hasLocation(currLocation)) {
-    console.dir(currLocation.toObject());
     description = (<p>{getDescription(currLocation)}</p>);
     enemiesDescription = (<p>{getEnemiesDescription(currLocation)}</p>);
     itemsDescription = (<p>{getItemsDescription(currLocation)}</p>);
