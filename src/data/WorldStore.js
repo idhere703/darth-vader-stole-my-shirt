@@ -5,8 +5,37 @@ import AppDispatcher from './AppDispatcher';
 import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
-import { getCurrentArea } from '../utils';
+import Character from './models/Character';
+import { Item } from './models/Item';
+import { getCurrentArea, getCurrentLocation } from '../utils';
 
+function getPickupOptions(currLocation) {
+  const options = [];
+  if (currLocation) {
+    const items = currLocation.get('items');
+    items.forEach(item => {
+      options.push({
+        label: `${item.name}`,
+        action: () => {}
+      });
+    });
+  }
+  return options;
+}
+
+function getAttackOptions(currLocation) {
+  const options = [];
+  if (currLocation) {
+    const enemies = currLocation.get('enemies');
+    enemies.forEach(enemy => {
+      options.push({
+        label: `${enemy.name} (lv ${enemy.level} ${enemy.class})`,
+        action: () => {}
+      });
+    });
+  }
+  return options;
+}
 
 function getMovementOptions(map, currentLocation) {
   const possibleOptions = [
@@ -17,15 +46,6 @@ function getMovementOptions(map, currentLocation) {
         AppDispatcher.dispatch({
           type: AppActionTypes.CHANGE_LOCATION,
           newLocation: [currentLocation[0] + 1, currentLocation[1]],
-        });
-      },
-    }, {
-      label: 'South',
-      direction: [currentLocation[0] - 1, currentLocation[1]],
-      action: () => {
-        AppDispatcher.dispatch({
-          type: AppActionTypes.CHANGE_LOCATION,
-          newLocation: [currentLocation[0] - 1, currentLocation[1]],
         });
       },
     }, {
@@ -46,6 +66,15 @@ function getMovementOptions(map, currentLocation) {
           newLocation: [currentLocation[0], currentLocation[1] - 1],
         });
       },
+    }, {
+      label: 'South',
+      direction: [currentLocation[0] - 1, currentLocation[1]],
+      action: () => {
+        AppDispatcher.dispatch({
+          type: AppActionTypes.CHANGE_LOCATION,
+          newLocation: [currentLocation[0] - 1, currentLocation[1]],
+        });
+      },
     }
   ];
   return possibleOptions.filter(option => {
@@ -59,9 +88,30 @@ function setActions(currArea) {
     label: 'Move',
     subActions: getMovementOptions(currArea.get('map'), currArea.get('current_location'))
   }, {
-    label: 'Examine'
+    label: 'Examine',
+    subActions: [
+      {
+        label: 'Room',
+        action: () => {}
+      },
+      {
+        label: 'Enemies',
+        visible(locat) {
+          return locat.get('enemies').length;
+        },
+        subActions: []
+      },
+      {
+        label: 'Items',
+        visible(locat) {
+          return locat.get('items').length;
+        },
+        subActions: []
+      },
+    ],
   }, {
     label: 'Attack',
+    subActions: getAttackOptions(getCurrentLocation(currArea)),
     visible(locat) {
       return locat.get('enemies').length;
     }
@@ -74,12 +124,24 @@ function setActions(currArea) {
     label: 'Use'
   }, {
     label: 'Pickup',
+    subActions: getPickupOptions(getCurrentLocation(currArea)),
     visible(locat) {
       return locat.get('items').length;
     }
   }, {
     label: 'Use Dimensional'
   }];
+}
+
+
+// Reduce passed prop to no less than zero.
+function reduceProp(character, prop, newVal) {
+  if (character && prop && typeof newVal === 'number') {
+    const newProp = character.get(prop) - newVal;
+    if (newProp < 0) character = character.set(prop, 0);
+    else character = character.set(prop, newProp);
+  }
+  return character
 }
 
 
@@ -227,7 +289,15 @@ class WorldStore extends ReduceStore {
     return Immutable.OrderedMap({ 
       world: world,
       actions,
-      action_breadcrumbs: []
+      action_breadcrumbs: [],
+      character: new Character({
+        name: 'Minion',
+        class: 'Slime', 
+        max_health: 150, 
+        health: 150,
+        items: [new Item(), new Item()],
+        dimensional_items: [new Item()]
+      }),
     });
   }
 
@@ -273,6 +343,22 @@ class WorldStore extends ReduceStore {
         const nActions = state.set('actions', action.actions);
         const nBread = nActions.update('action_breadcrumbs', breadcrumbs => breadcrumbs.slice(0, action.bIndex));
         return nBread;
+      case AppActionTypes.CREATE_CHARACTER:
+        return state.set('character', new Character(action.seed));
+      case AppActionTypes.REDUCE_FOOD:
+        return state.set('character', reduceProp(state.get('character'), 'food', action.food));
+      case AppActionTypes.REDUCE_WATER:
+        return state.set('character', reduceProp(state.get('character'), 'water', action.water));
+      case AppActionTypes.ADD_ITEMS:
+        if (Array.isArray(action.itemsToAdd) === true) {
+          return state.updateIn(['character', 'items'], items => {
+            items.push(...action.itemsToAdd);
+            return items;
+          });
+        }
+        return state;
+      case AppActionTypes.REMOVE_ITEMS:
+        return state;
       default:
         return state;
     }

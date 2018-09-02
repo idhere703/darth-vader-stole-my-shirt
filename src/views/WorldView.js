@@ -12,18 +12,17 @@ function getEnemiesDescription(locat) {
   const enemies = locat.get('enemies');
   const eLen = enemies.length;
   if (!eLen) return '';
-  else if (eLen === 1) return `You see one enemy: `;
-  return `You see several enemies: `
+  else if (eLen === 1) return `You see one enemy.`;
+  return `You see several enemies.`
 }
 
 function getItemsDescription(locat) {
   const items = locat.get('items');
   const iLen = items.length;
   if (!iLen) return '';
-  else if (iLen === 1) return `You see one item:`;
-  return `You see several items: `;
+  else if (iLen === 1) return `You see one item.`;
+  return `You see several items.`;
 }
-
 
 function WorldView(props) {
   const currArea = getCurrentArea(props.worldInfo.get('world'));
