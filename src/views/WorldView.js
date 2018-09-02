@@ -1,11 +1,6 @@
 import React from 'react';
-
-function getCurrentLocation(world) {
-  const areas = world.get('areas');
-  const currentArea = areas[world.get('current_floor')];
-  const locationIndex = currentArea.get('current_location');
-  return currentArea.get('map')[locationIndex[0]][locationIndex[1]];
-}
+import Actions from './components/Actions';
+import { getCurrentArea, getCurrentLocation } from '../utils';
 
 const hasLocation = (locat) => (typeof locat === 'object' && locat !== null);
 
@@ -31,7 +26,8 @@ function getItemsDescription(locat) {
 
 
 function WorldView(props) {
-  const currLocation = getCurrentLocation(props.worldInfo.get('world'));
+  const currArea = getCurrentArea(props.worldInfo.get('world'));
+  const currLocation = getCurrentLocation(currArea);
   let description = '';
   let enemiesDescription = '';
   let itemsDescription = '';
@@ -47,9 +43,7 @@ function WorldView(props) {
         { enemiesDescription }
         { itemsDescription }
       </section>
-      <section className="world__actions">
-
-      </section>
+      <Actions currLocation={currLocation} { ...props } ></Actions>
     </section>
   );
 }

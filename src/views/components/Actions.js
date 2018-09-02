@@ -1,0 +1,42 @@
+import React from 'react';
+
+function Actions(props) {
+
+  function runAction(actions, action) {
+    if (action.subActions) {
+      return props.openSubmenu(actions, action);
+    }
+
+    if (typeof action.action === 'function') return action.action();
+  }
+  const actions = props.worldInfo.get('actions');
+  const breadcrumbs = props.worldInfo.get('action_breadcrumbs');
+  return (
+    <section className="world__actions">
+      { breadcrumbs.map(b => {
+        return (
+          <span className="world__actions--breadcrumb" key={b.bIndex} onClick={() => props.breadcrumbClicked(b.preState, b.bIndex)}>
+            {b.label}
+          </span>);
+      }) }
+      <section className="world__actions--content">
+        <ul>
+          {
+            actions.filter(a => {
+              if (a.visible !== undefined) return a.visible(props.currLocation);
+              return true;
+            })
+              .map((a, i) => {
+                return (
+                  <li key={i} onClick={() => runAction(actions, a)}>
+                    <div className="world__actions--list-item">&#8594; {a.label}</div>
+                  </li>
+                );
+              })}
+        </ul>
+      </section>
+    </section>
+  );
+}
+
+export default Actions;

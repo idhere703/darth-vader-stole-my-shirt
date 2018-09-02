@@ -8,4 +8,23 @@
   }  
 
 .world__actions {
+  margin-top: 10px;
+  border-width: 15px;
+  border-style: solid;
+  border-image: url('../res/vines-border.png') 25% round;
+  height: 9em;
+  overflow: scroll;
 }
+
+.world__actions--content {
+  /* margin: 10px; */
+}
+
+.world__actions--list-item {
+  cursor: pointer;
+}
+
+.world__actions--breadcrumb {
+  cursor: pointer;
+}
+

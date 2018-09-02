@@ -11,7 +11,7 @@ body {
   background-color: #FAFFFD;
   background-image: url('../res/paper-backround.jpg');
   background-size:cover;
-  margin: 40px auto;
+  margin: 10px auto 40px auto;
   max-width: 850px;
   line-height: 1.6;
   font-size: 18px;
@@ -25,6 +25,10 @@ h1, h2, h3 {
 
 p img {
   animation: fadein 2s;
+}
+
+ul {
+  list-style: none;
 }
 
 @keyframes fadein {

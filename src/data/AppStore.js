@@ -9,7 +9,7 @@ class AppStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap({ open: false });
+    return Immutable.OrderedMap({});
   }
 
   reduce(state, action) {

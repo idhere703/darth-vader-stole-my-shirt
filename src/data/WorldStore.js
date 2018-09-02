@@ -5,12 +5,89 @@ import AppDispatcher from './AppDispatcher';
 import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
+import { getCurrentArea } from '../utils';
+
+
+function getMovementOptions(map, currentLocation) {
+  const possibleOptions = [
+    {
+      label: 'North',
+      direction: [currentLocation[0] + 1, currentLocation[1]],
+      action: () => {
+        AppDispatcher.dispatch({
+          type: AppActionTypes.CHANGE_LOCATION,
+          newLocation: [currentLocation[0] + 1, currentLocation[1]],
+        });
+      },
+    }, {
+      label: 'South',
+      direction: [currentLocation[0] - 1, currentLocation[1]],
+      action: () => {
+        AppDispatcher.dispatch({
+          type: AppActionTypes.CHANGE_LOCATION,
+          newLocation: [currentLocation[0] - 1, currentLocation[1]],
+        });
+      },
+    }, {
+      label: 'East',
+      direction: [currentLocation[0], currentLocation[1] + 1],
+      action: () => {
+        AppDispatcher.dispatch({
+          type: AppActionTypes.CHANGE_LOCATION,
+          newLocation: [currentLocation[0], currentLocation[1] + 1],
+        });
+      },
+    }, {
+      label: 'West',
+      direction: [currentLocation[0], currentLocation[1] - 1],
+      action: () => {
+        AppDispatcher.dispatch({
+          type: AppActionTypes.CHANGE_LOCATION,
+          newLocation: [currentLocation[0], currentLocation[1] - 1],
+        });
+      },
+    }
+  ];
+  return possibleOptions.filter(option => {
+    const o = option.direction;
+    return map[o[0]] !== undefined && map[o[0]][o[1]] !== 1;
+  });
+}
+
+function setActions(currArea) {
+  return [{
+    label: 'Move',
+    subActions: getMovementOptions(currArea.get('map'), currArea.get('current_location'))
+  }, {
+    label: 'Examine'
+  }, {
+    label: 'Attack',
+    visible(locat) {
+      return locat.get('enemies').length;
+    }
+  }, {
+    label: 'Special',
+    visible(locat) {
+      return locat.get('enemies').length;
+    }
+  }, {
+    label: 'Use'
+  }, {
+    label: 'Pickup',
+    visible(locat) {
+      return locat.get('items').length;
+    }
+  }, {
+    label: 'Use Dimensional'
+  }];
+}
+
 
 function isValidLocation(location) {
   return location !== undefined && location !== 1;
 }
 
-function getCurrentLocation(area, location) {
+function getLocation(area, location) {
   const locationIndex = location || area.get('current_location');
   const map = area.get('map');
   return map[locationIndex[0]] && map[locationIndex[0]][locationIndex[1]];
@@ -92,7 +169,9 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
           current_location = [currentRow, currentColumn];
           charSet = true;
         } else {
-          map[currentRow][currentColumn] = createLocation({});
+          map[currentRow][currentColumn] = createLocation({
+            id: `${currentRow},${currentColumn}`
+          });
         }
         currentRow += randomDirection[0]; //add the value from randomDirection to row and col (-1, 0, or 1) to update our location
         currentColumn += randomDirection[1];
@@ -142,26 +221,58 @@ class WorldStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap({ world: buildWorld() });
+    const world = buildWorld();
+    const currArea = getCurrentArea(world);
+    const actions = setActions(currArea)
+    return Immutable.OrderedMap({ 
+      world: world,
+      actions,
+      action_breadcrumbs: []
+    });
   }
 
   reduce(state, action) {
     switch (action.type) {
       case AppActionTypes.CREATE_WORLD:
-        if (action.seed !== undefined) return state.set('world', buildWorld(action.seed));
-        return state.set('world', buildWorld());
+        const world = buildWorld(action.seed);
+        AppDispatcher.dispatch({ type: AppActionTypes.SET_ACTIONS, currArea: getCurrentArea(world) });
+        // TODO: Set actions here as well.
+        return state.set('world', world);
       case AppActionTypes.CHANGE_FLOOR:
-        return state.setIn(['world', 'current_floor'], action.newFloor);
+        const chf1 = state.setIn(['world', 'current_floor'], action.newFloor);
+        // Reset actions
+        const chf2 = chf1.set('actions', setActions(getCurrentArea(chf1.get('world'))));
+        // Reset breadcrumbs
+        const chf3 = chf2.set('action_breadcrumbs', []);
+        return chf3;
       case AppActionTypes.CHANGE_LOCATION:
-        return state.updateIn(['world', 'areas'], areas => {
+        const s1 = state.updateIn(['world', 'areas'], areas => {
           const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
           // Only allow update if the space isn't blocked.
-          const currLoc = getCurrentLocation(areas[index], action.newLocation);
+          const currLoc = getLocation(areas[index], action.newLocation);
           if (isValidLocation(currLoc)) {
             areas[index] = areas[index].set('current_location', action.newLocation);
           }
           return areas;
         });
+        // Reset actions
+        const s2 = s1.set('actions', setActions(getCurrentArea(s1.get('world'))));
+        // Reset breadcrumbs
+        const s3 = s2.set('action_breadcrumbs', []);
+        return s3;
+      case AppActionTypes.SET_ACTIONS:
+        return state.set('actions', setActions(action.currArea));
+      case AppActionTypes.OPEN_SUB_MENU:
+        const newActions = state.set('actions', action.clickedAction.subActions);
+        const newBread = state.update('action_breadcrumbs', breadcrumbs => {
+          breadcrumbs.push({ bIndex: breadcrumbs.length, label: action.clickedAction.label, preState: action.actions})
+          return breadcrumbs;
+        });
+        return newBread.mergeDeep(newActions);
+      case AppActionTypes.BREADCRUMB_CLICKED:
+        const nActions = state.set('actions', action.actions);
+        const nBread = nActions.update('action_breadcrumbs', breadcrumbs => breadcrumbs.slice(0, action.bIndex));
+        return nBread;
       default:
         return state;
     }

@@ -2,7 +2,6 @@ import Immutable from 'immutable';
 import AppActions from '../data/AppActionTypes';
 import WorldStore from '../data/WorldStore';
 
-
 function getCurrentArea(world) {
   const areas = world.get('areas');
   const index = areas.findIndex(a => a.floor === world.get('current_floor'));

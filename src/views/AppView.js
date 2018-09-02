@@ -7,10 +7,11 @@ import TitleImgWrapper from './components/TitleImg';
 // import Sidebar from './components/Sidebar';
 
 function AppView(props) {
+  const worldRendered = props.worldInfo.get('world');
   return (
     <div>
       <header>
-        <h1 id="header" className="app__header">Darth Vader Stole My Shirt</h1>
+        <h1 id="header" className="app__header">Minion</h1>
         <div className='app__title--container'><TitleImgWrapper src={HeaderTitle} classes='app__title--img' /></div>
       </header>
       <aside>
@@ -27,7 +28,7 @@ function AppView(props) {
         </section> */}
       </aside>
       <main>
-        <WorldView { ...props } />
+        { (worldRendered) && <WorldView { ...props } /> } 
       </main>
     </div>
   );
