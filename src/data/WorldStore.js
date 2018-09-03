@@ -13,6 +13,10 @@ function getPickupOptions(currLocation) {
   const options = [];
   if (currLocation) {
     const items = currLocation.get('items');
+    options.push({
+      label: 'Take All',
+      action: () => {}
+    });
     items.forEach(item => {
       options.push({
         label: `${item.name}`,
@@ -133,7 +137,6 @@ function setActions(currArea) {
   }];
 }
 
-
 // Reduce passed prop to no less than zero.
 function reduceProp(character, prop, newVal) {
   if (character && prop && typeof newVal === 'number') {
@@ -143,7 +146,6 @@ function reduceProp(character, prop, newVal) {
   }
   return character
 }
-
 
 function isValidLocation(location) {
   return location !== undefined && location !== 1;
@@ -276,7 +278,6 @@ function buildWorld(seed) {
   return new World({ areas, current_floor: 0 });
 }
 
-
 class WorldStore extends ReduceStore {
   constructor() {
     super(AppDispatcher);
@@ -296,7 +297,7 @@ class WorldStore extends ReduceStore {
         max_health: 150, 
         health: 150,
         items: [new Item(), new Item()],
-        dimensional_items: [new Item()]
+        dimensional_items: []
       }),
     });
   }
@@ -335,7 +336,14 @@ class WorldStore extends ReduceStore {
       case AppActionTypes.OPEN_SUB_MENU:
         const newActions = state.set('actions', action.clickedAction.subActions);
         const newBread = state.update('action_breadcrumbs', breadcrumbs => {
-          breadcrumbs.push({ bIndex: breadcrumbs.length, label: action.clickedAction.label, preState: action.actions})
+          let aLabel = 'Actions';
+          if (breadcrumbs.length > 0) aLabel = breadcrumbs[breadcrumbs.length - 1].originalLabel;
+          breadcrumbs.push({ 
+            bIndex: breadcrumbs.length,
+            originalLabel: action.clickedAction.label,
+            label: aLabel, 
+            preState: action.actions
+          })
           return breadcrumbs;
         });
         return newBread.mergeDeep(newActions);
@@ -351,8 +359,11 @@ class WorldStore extends ReduceStore {
         return state.set('character', reduceProp(state.get('character'), 'water', action.water));
       case AppActionTypes.ADD_ITEMS:
         if (Array.isArray(action.itemsToAdd) === true) {
+          const character = state.get('character');
           return state.updateIn(['character', 'items'], items => {
-            items.push(...action.itemsToAdd);
+            if (items.length + action.itemsToAdd.length <= character.inventory_space) {
+              items.push(...action.itemsToAdd);
+            }
             return items;
           });
         }

@@ -112,7 +112,8 @@ describe('Character', function() {
         max_food: 100,
         food: 100,
         max_water: 100,
-        water: 100
+        water: 100,
+        inventory_space: 5
       }
     });
   })
@@ -151,6 +152,18 @@ describe('Character', function() {
     expect(items).toContain(item);
   });
 
+  test('It fails to add items greater than the inventory limit', function() {
+    const item = new Item();
+    const oldItemLength = state.getIn(['character', 'items']).length;
+    dispatch({
+      type: AppActions.ADD_ITEMS,
+      itemsToAdd: [item, item, item, item, item, item]
+    });
+
+    const items = state.getIn(['character', 'items']);
+    expect(items.length).toBe(oldItemLength);
+  });
+
   test('It removes items from the user inventory', function() {
     const oldItems = state.getIn(['character', 'items']);
     dispatch({
@@ -161,5 +174,4 @@ describe('Character', function() {
     const items = state.getIn(['character', 'items']);
     expect(items.length).toBeLessThan(oldItems.length);
   });
-
 });
