@@ -40,6 +40,12 @@ const Actions = {
       bIndex: index
     });
   },
+  setDescription(description) {
+    AppDispatcher.dispatch({
+      type: AppActionTypes.SET_DESCRIPTION,
+      description
+    });
+  },
   // CHARACTER
   createCharacter(seed, customProps) {
     AppDispatcher.dispatch({

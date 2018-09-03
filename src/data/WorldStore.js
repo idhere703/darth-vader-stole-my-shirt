@@ -1,3 +1,4 @@
+import React from 'react';
 import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
 import AppActionTypes from './AppActionTypes';
@@ -6,8 +7,51 @@ import World from './models/World';
 import Area from './models/Area';
 import Location from './models/Location';
 import Character from './models/Character';
-import { Item } from './models/Item';
+import { Item, ItemType } from './models/Item';
 import { getCurrentArea, getCurrentLocation } from '../utils';
+
+function changeLocation(state, action) {
+  const s1 = state.updateIn(['world', 'areas'], areas => {
+    const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
+    // Only allow update if the space isn't blocked.
+    const currLoc = getLocation(areas[index], action.newLocation);
+    if (isValidLocation(currLoc)) {
+      areas[index] = areas[index].set('current_location', action.newLocation);
+    }
+    return areas;
+  });
+  // Reset actions
+  const s2 = s1.set('actions', setActions(getCurrentArea(s1.get('world')), s1.get('character')));
+  // Reset breadcrumbs
+  const s3 = s2.set('action_breadcrumbs', []);
+  // Build room description.
+  return s3.set('world_description', buildRoomDescription(getCurrentArea(s3.get('world'))));
+}
+
+function buildRoomDescription(currArea) {
+  const locat = getCurrentLocation(currArea);
+  const enemies = locat.get('enemies');
+  const items = locat.get('items');
+  const eLen = enemies.length;
+  const iLen = items.length;
+
+  let eDes = '';
+  let iDes = '';
+
+  if (eLen === 1) eDes = `One enemy.`;
+  else if (eLen > 1) eDes = `Several enemies.`
+
+  if (iLen === 1) iDes = `One item.`;
+  else if (iLen > 1) iDes =`Several items.`;
+
+  const description = [
+    (<p key="desr0">{`You look around and see:`}</p>),
+    (<p key="desr1">{`${locat.get('description')}`}</p>),
+    (<p key="desr2">{eDes}</p>),
+    (<p key="desr3">{iDes}</p>)
+  ];
+  return description;
+}
 
 function getPickupOptions(currLocation) {
   const options = [];
@@ -87,7 +131,30 @@ function getMovementOptions(map, currentLocation) {
   });
 }
 
-function setActions(currArea) {
+function getEnemyDescription(e) {
+  return [
+    (<p key="0">Name: {e.name}</p>),
+    (<p key="00">Health: {e.health}</p>),
+    (<p key="1">Class: {e.class}</p>),
+    (<p key="2">Description: {e.description}</p>),
+    (<p key="3">Level: {e.level}</p>),
+  ];
+}
+
+function getItemDescription(i) {
+  // TODO: Add in multiple type support. Such as weapon modification and such.
+  return [
+    (<p key="0">Description: {i.description}</p>),
+    (<p key="1">Food: {i.food}</p>),
+    (<p key="2">Water: {i.water}</p>),
+    (<p key="3">Health: {i.health}</p>),
+    (<p key="4">Uses: {i.uses}</p>),
+    (<p key="5">Size: {i.space}</p>),
+  ];
+}
+
+function setActions(currArea, character) {
+  const currLocation = getCurrentLocation(currArea);
   return [{
     label: 'Move',
     subActions: getMovementOptions(currArea.get('map'), currArea.get('current_location'))
@@ -96,44 +163,90 @@ function setActions(currArea) {
     subActions: [
       {
         label: 'Room',
-        action: () => {}
+        action: () => {
+          AppDispatcher.dispatch({
+            type: AppActionTypes.SET_DESCRIPTION,
+            description: buildRoomDescription(currArea)
+          });
+        }
       },
       {
         label: 'Enemies',
         visible(locat) {
           return locat.get('enemies').length;
         },
-        subActions: []
+        // TODO: Implement perception check and pass list of perceived enemies to render.
+        // Should only be calculated on room enter.
+        subActions: currLocation.get('enemies').map(e => {
+          return {
+            label: e.name,
+            action: () => {
+              AppDispatcher.dispatch({
+                type: AppActionTypes.SET_DESCRIPTION,
+                description: getEnemyDescription(e)
+              });
+            }
+          };
+        })
       },
       {
         label: 'Items',
         visible(locat) {
           return locat.get('items').length;
         },
-        subActions: []
+        subActions: currLocation.get('items').map(i => {
+          return {
+            label: i.name,
+            action: () => {
+              AppDispatcher.dispatch({
+                type: AppActionTypes.SET_DESCRIPTION,
+                description: getItemDescription(i)
+              });
+            }
+          };
+        })
       },
     ],
   }, {
     label: 'Attack',
-    subActions: getAttackOptions(getCurrentLocation(currArea)),
+    subActions: getAttackOptions(currLocation),
     visible(locat) {
       return locat.get('enemies').length;
     }
   }, {
     label: 'Special',
+    subActions: character.get('skills').map(skill => {
+      return {
+        label: skill.name
+      };
+    }),
     visible(locat) {
-      return locat.get('enemies').length;
+      return locat.get('enemies').length && character.get('skills').length > 0;
     }
   }, {
-    label: 'Use'
+    label: 'Use',
+    visible: () => character.get('items').length > 0,
+    subActions: character.get('items').map(i => {
+      return {
+        label: i.name,
+        action: () => {}
+      };
+    })
   }, {
     label: 'Pickup',
-    subActions: getPickupOptions(getCurrentLocation(currArea)),
+    subActions: getPickupOptions(currLocation),
     visible(locat) {
       return locat.get('items').length;
     }
   }, {
-    label: 'Use Dimensional'
+    label: 'Use Dimensional',
+    visible: () => character.get('dimensional_items').length > 0,
+    subActions: character.get('dimensional_items').map(i => {
+      return {
+        label: i.name,
+        action: () => {}
+      };
+    })
   }];
 }
 
@@ -286,19 +399,37 @@ class WorldStore extends ReduceStore {
   getInitialState() {
     const world = buildWorld();
     const currArea = getCurrentArea(world);
-    const actions = setActions(currArea)
+    const character = new Character({
+      name: 'Minion',
+      class: 'Slime', 
+      max_health: 150, 
+      health: 150,
+      items: [
+        new Item(), 
+        new Item({
+          id: 'health',
+          name: 'Small Potion',
+          description: 'A small potion that restores a little bit of health.',
+          food: 0,
+          degrade_rate: 0, // Only used for food.
+          water: 0,
+          health: 30,
+          item_type: new ItemType({
+            food: false,
+            water: false
+          }),
+        })
+      ],
+      dimensional_items: []
+    });
+    const actions = setActions(currArea, character);
+    const description = buildRoomDescription(currArea);
     return Immutable.OrderedMap({ 
       world: world,
       actions,
       action_breadcrumbs: [],
-      character: new Character({
-        name: 'Minion',
-        class: 'Slime', 
-        max_health: 150, 
-        health: 150,
-        items: [new Item(), new Item()],
-        dimensional_items: []
-      }),
+      world_description: description,
+      character
     });
   }
 
@@ -307,32 +438,18 @@ class WorldStore extends ReduceStore {
       case AppActionTypes.CREATE_WORLD:
         const world = buildWorld(action.seed);
         AppDispatcher.dispatch({ type: AppActionTypes.SET_ACTIONS, currArea: getCurrentArea(world) });
-        // TODO: Set actions here as well.
         return state.set('world', world);
       case AppActionTypes.CHANGE_FLOOR:
         const chf1 = state.setIn(['world', 'current_floor'], action.newFloor);
         // Reset actions
-        const chf2 = chf1.set('actions', setActions(getCurrentArea(chf1.get('world'))));
+        const chf2 = chf1.set('actions', setActions(getCurrentArea(chf1.get('world')), chf1.get('character')));
         // Reset breadcrumbs
         const chf3 = chf2.set('action_breadcrumbs', []);
         return chf3;
       case AppActionTypes.CHANGE_LOCATION:
-        const s1 = state.updateIn(['world', 'areas'], areas => {
-          const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
-          // Only allow update if the space isn't blocked.
-          const currLoc = getLocation(areas[index], action.newLocation);
-          if (isValidLocation(currLoc)) {
-            areas[index] = areas[index].set('current_location', action.newLocation);
-          }
-          return areas;
-        });
-        // Reset actions
-        const s2 = s1.set('actions', setActions(getCurrentArea(s1.get('world'))));
-        // Reset breadcrumbs
-        const s3 = s2.set('action_breadcrumbs', []);
-        return s3;
+        return changeLocation(state, action);
       case AppActionTypes.SET_ACTIONS:
-        return state.set('actions', setActions(action.currArea));
+        return state.set('actions', setActions(action.currArea), state.get('character'));
       case AppActionTypes.OPEN_SUB_MENU:
         const newActions = state.set('actions', action.clickedAction.subActions);
         const newBread = state.update('action_breadcrumbs', breadcrumbs => {
@@ -351,6 +468,8 @@ class WorldStore extends ReduceStore {
         const nActions = state.set('actions', action.actions);
         const nBread = nActions.update('action_breadcrumbs', breadcrumbs => breadcrumbs.slice(0, action.bIndex));
         return nBread;
+      case AppActionTypes.SET_DESCRIPTION:
+        return state.set('world_description', action.description);
       case AppActionTypes.CREATE_CHARACTER:
         return state.set('character', new Character(action.seed));
       case AppActionTypes.REDUCE_FOOD:
@@ -362,7 +481,13 @@ class WorldStore extends ReduceStore {
           const character = state.get('character');
           return state.updateIn(['character', 'items'], items => {
             if (items.length + action.itemsToAdd.length <= character.inventory_space) {
+              // TODO: Remove items from location.
               items.push(...action.itemsToAdd);
+            } else {
+              AppDispatcher.dispatch({
+                type: AppActionTypes.SET_DESCRIPTION,
+                description: (<p key="max_items">Inventory space exceeded.</p>)
+              });
             }
             return items;
           });

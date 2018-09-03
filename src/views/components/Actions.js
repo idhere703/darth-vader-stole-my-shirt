@@ -1,6 +1,8 @@
 import React from 'react';
 
 function Actions(props) {
+  const actions = props.worldInfo.get('actions');
+  const breadcrumbs = props.worldInfo.get('action_breadcrumbs');
 
   function runAction(actions, action) {
     if (action.subActions) {
@@ -9,8 +11,7 @@ function Actions(props) {
 
     if (typeof action.action === 'function') return action.action();
   }
-  const actions = props.worldInfo.get('actions');
-  const breadcrumbs = props.worldInfo.get('action_breadcrumbs');
+
   return (
     <section className="world__actions">
       { breadcrumbs.map((b, i) => {

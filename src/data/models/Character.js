@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import Skill from './Skill';
 
 const Character = Immutable.Record({
   name: 'Formless',
@@ -28,7 +29,7 @@ const Character = Immutable.Record({
   items: [], // An array of items.
   dimensional_items: [], // An array of items.
   statuses: [], // Any special statuses.
-  skills: [], // Skills, require something to be used.
+  skills: [new Skill()], // Skills, require something to be used.
   drops: [], // On death, nothing dropped from unnamed foes and the character.
   possible_drops: [], // What's the possible drops.
   experience_given: 0, // Given on death.
