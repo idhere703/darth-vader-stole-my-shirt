@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip'
 
 function Actions(props) {
   const actions = props.worldInfo.get('actions');
@@ -31,7 +32,16 @@ function Actions(props) {
               .map((a, i) => {
                 return (
                   <li key={i} onClick={() => runAction(actions, a)}>
-                    <div className="world__actions--list-item">&#8594; {a.label}</div>
+                    {
+                      a.tooltip ? (
+                        <div>
+                          <div data-tip data-for={`${i}`} className="world__actions--list-item">&#8594; {a.label}</div>
+                          <ReactTooltip id={`${i}`} aria-haspopup='true' place="top" type="dark" effect="float" delayShow={500}>{ a.tooltip }</ReactTooltip>
+                        </div>
+                      ) : (
+                        <div className="world__actions--list-item">&#8594; {a.label}</div>
+                      )
+                    }
                   </li>
                 );
               })}

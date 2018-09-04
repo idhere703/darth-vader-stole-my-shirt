@@ -64,6 +64,7 @@ function getPickupOptions(currLocation) {
     items.forEach(item => {
       options.push({
         label: `${item.name}`,
+        tooltip: getItemDescription(item),
         action: () => {}
       });
     });
@@ -78,6 +79,7 @@ function getAttackOptions(currLocation) {
     enemies.forEach(enemy => {
       options.push({
         label: `${enemy.name} (lv ${enemy.level} ${enemy.class})`,
+        tooltip: getEnemyDescription(enemy),
         action: () => {}
       });
     });
@@ -144,12 +146,19 @@ function getEnemyDescription(e) {
 function getItemDescription(i) {
   // TODO: Add in multiple type support. Such as weapon modification and such.
   return [
-    (<p key="0">Description: {i.description}</p>),
+    (<p key="0">{i.description}</p>),
     (<p key="1">Food: {i.food}</p>),
     (<p key="2">Water: {i.water}</p>),
     (<p key="3">Health: {i.health}</p>),
     (<p key="4">Uses: {i.uses}</p>),
     (<p key="5">Size: {i.space}</p>),
+  ];
+}
+
+function getSkillDescription(s) {
+  return [
+    (<p key="0">{s.name} (lv {s.level})</p>),
+    (<p key="1">{s.description}</p>),
   ];
 }
 
@@ -217,7 +226,8 @@ function setActions(currArea, character) {
     label: 'Special',
     subActions: character.get('skills').map(skill => {
       return {
-        label: skill.name
+        label: skill.name,
+        tooltip: getSkillDescription(skill),
       };
     }),
     visible(locat) {
@@ -229,6 +239,7 @@ function setActions(currArea, character) {
     subActions: character.get('items').map(i => {
       return {
         label: i.name,
+        tooltip: getItemDescription(i),
         action: () => {}
       };
     })
@@ -439,6 +450,8 @@ class WorldStore extends ReduceStore {
         const world = buildWorld(action.seed);
         AppDispatcher.dispatch({ type: AppActionTypes.SET_ACTIONS, currArea: getCurrentArea(world) });
         return state.set('world', world);
+
+
       case AppActionTypes.CHANGE_FLOOR:
         const chf1 = state.setIn(['world', 'current_floor'], action.newFloor);
         // Reset actions
@@ -446,10 +459,16 @@ class WorldStore extends ReduceStore {
         // Reset breadcrumbs
         const chf3 = chf2.set('action_breadcrumbs', []);
         return chf3;
+
+
       case AppActionTypes.CHANGE_LOCATION:
         return changeLocation(state, action);
+
+
       case AppActionTypes.SET_ACTIONS:
         return state.set('actions', setActions(action.currArea), state.get('character'));
+
+
       case AppActionTypes.OPEN_SUB_MENU:
         const newActions = state.set('actions', action.clickedAction.subActions);
         const newBread = state.update('action_breadcrumbs', breadcrumbs => {
@@ -464,18 +483,30 @@ class WorldStore extends ReduceStore {
           return breadcrumbs;
         });
         return newBread.mergeDeep(newActions);
+
+
       case AppActionTypes.BREADCRUMB_CLICKED:
         const nActions = state.set('actions', action.actions);
         const nBread = nActions.update('action_breadcrumbs', breadcrumbs => breadcrumbs.slice(0, action.bIndex));
         return nBread;
+
+
       case AppActionTypes.SET_DESCRIPTION:
         return state.set('world_description', action.description);
+
+
       case AppActionTypes.CREATE_CHARACTER:
         return state.set('character', new Character(action.seed));
+
+
       case AppActionTypes.REDUCE_FOOD:
         return state.set('character', reduceProp(state.get('character'), 'food', action.food));
+
+
       case AppActionTypes.REDUCE_WATER:
         return state.set('character', reduceProp(state.get('character'), 'water', action.water));
+
+
       case AppActionTypes.ADD_ITEMS:
         if (Array.isArray(action.itemsToAdd) === true) {
           const character = state.get('character');
@@ -493,8 +524,12 @@ class WorldStore extends ReduceStore {
           });
         }
         return state;
+
+
       case AppActionTypes.REMOVE_ITEMS:
         return state;
+
+
       default:
         return state;
     }
