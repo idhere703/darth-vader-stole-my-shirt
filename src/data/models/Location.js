@@ -7,7 +7,8 @@ const Location = Immutable.Record({
   safe_zone: false,
   enemies: [new Character()],
   items: [new Item()],
-  id: ''
+  id: '',
+  exit: false, // Allow movement to the next area.
 });
 
 export default Location;

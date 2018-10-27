@@ -12,7 +12,8 @@ function getCurrentArea(world) {
 function getCurrentLocation(world) {
   const currentArea = getCurrentArea(world);
   const locationIndex = currentArea.get('current_location');
-  return currentArea.get('map')[locationIndex[0]][locationIndex[1]];
+  const location = currentArea.get('map')[locationIndex[0]][locationIndex[1]];
+  return location;
 }
 
 function getMovementOptions(map, currentLocation) {
@@ -28,20 +29,33 @@ function getMovementOptions(map, currentLocation) {
 }
 
 describe('World', function() {
-  let state = Immutable.OrderedMap();
+  let state = WorldStore.getState();
   function dispatch(action) {
     state = WorldStore.reduce(state, action);
   }
-
-  beforeAll(function() {
-    dispatch({ type: AppActions.CREATE_WORLD });
-  });
 
   test('Creates game grid with at least one area', function() {
     const world = state.get('world'); 
     expect(typeof world === 'object').toBe(true);
     expect(Array.isArray(world.areas)).toBe(true);
     expect(world.areas.length > 0).toBe(true);
+  });
+
+  test('Creates each area with at least one exit', function() {
+    const world = state.get('world');
+    world.areas.forEach(area => {
+      const map = area.map;
+      const exit = map.find(row => {
+        const containsExit = row.find(col => {
+          if (col.exit === true) {
+            return true;
+          }
+          return false;
+        });
+        return containsExit;
+      });
+      expect(exit).not.toBeFalsy();
+    });
   });
 
   test('Starts character off in a safe zone', function() {
@@ -87,6 +101,9 @@ describe('World', function() {
     expect(true).toBe(false);
   });
   test('Subtracts food and water cost from character on movement', function() {
+    expect(true).toBe(false);
+  });
+  test('Removed food items with zero food unless they have a water value', function() {
     expect(true).toBe(false);
   });
 });
@@ -173,5 +190,20 @@ describe('Character', function() {
 
     const items = state.getIn(['character', 'items']);
     expect(items.length).toBeLessThan(oldItems.length);
+  });
+
+  test('It levels up the character and adds additional stats', function() {
+    // const character = state.get('character');
+    expect(true).toBe(false);
+  })
+
+  test('It fails to decrease skill points by decimal values', function() {
+    expect(true).toBe(false);
+  });
+  test('It decreases skill points by integer values', function() {
+    expect(true).toBe(false);
+  });
+  test('It increases skill points by decimal or integer values', function() {
+    expect(true).toBe(false);
   });
 });

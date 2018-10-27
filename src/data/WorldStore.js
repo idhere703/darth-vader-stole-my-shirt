@@ -10,6 +10,32 @@ import Character from './models/Character';
 import { Item, ItemType } from './models/Item';
 import { getCurrentArea, getCurrentLocation } from '../utils';
 
+
+function levelUp(character, baseSkillPointIncrease = 5) {
+  // If the amount of exp doesn't match up to what we need. Just return.
+  if (character.experience_points < character.needed_exp) return character;
+  // Increase level by one.
+  const newLevel = parseInt(character.get('level'), 10) + 1;
+  // Increase skill points by the base and wisdom / 3.
+  const currSkillPoints = character.get('skill_points');
+  const newSkillPoints = currSkillPoints + baseSkillPointIncrease + (character.get('wisdom') / 3);
+  // Get a list of all the stats to increase.
+  const statIncreases = [
+    'attack', 'defense', 'health', 'max_health', 'wisdom', 'stealth', 'perception', 'speed',
+  ].reduce((stats, stat) => {
+    const currStat = character[stat];
+    stats[stat] = currStat + (currStat * character.potential[stat]);
+    return stats;
+  }, {});
+  let newChar = character.merge({
+    level: newLevel,
+    needed_exp: character.get('needed_exp') + (newLevel >= 10 ? (newLevel*(newLevel-1)/2) * 1000 : (newLevel * 1000)),
+    experience_points: 0,
+    skill_points: newSkillPoints
+  }, statIncreases);
+  return newChar;
+}
+
 function changeLocation(state, action) {
   const s1 = state.updateIn(['world', 'areas'], areas => {
     const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
@@ -164,6 +190,9 @@ function getSkillDescription(s) {
 
 function setActions(currArea, character) {
   const currLocation = getCurrentLocation(currArea);
+  const charSkills = character.get('skills') || [];
+  const charItems = character.get('items') || [];
+  const charDimItems = character.get('dimensional_items') || [];
   return [{
     label: 'Move',
     subActions: getMovementOptions(currArea.get('map'), currArea.get('current_location'))
@@ -224,19 +253,19 @@ function setActions(currArea, character) {
     }
   }, {
     label: 'Special',
-    subActions: character.get('skills').map(skill => {
+    subActions: charSkills.map(skill => {
       return {
         label: skill.name,
         tooltip: getSkillDescription(skill),
       };
     }),
     visible(locat) {
-      return locat.get('enemies').length && character.get('skills').length > 0;
+      return locat.get('enemies').length && charSkills.length > 0;
     }
   }, {
     label: 'Use',
-    visible: () => character.get('items').length > 0,
-    subActions: character.get('items').map(i => {
+    visible: () => charItems.length > 0,
+    subActions: charItems.map(i => {
       return {
         label: i.name,
         tooltip: getItemDescription(i),
@@ -251,8 +280,8 @@ function setActions(currArea, character) {
     }
   }, {
     label: 'Use Dimensional',
-    visible: () => character.get('dimensional_items').length > 0,
-    subActions: character.get('dimensional_items').map(i => {
+    visible: () => charDimItems.length > 0,
+    subActions: charDimItems.map(i => {
       return {
         label: i.name,
         action: () => {}
@@ -262,7 +291,8 @@ function setActions(currArea, character) {
 }
 
 // Reduce passed prop to no less than zero.
-function reduceProp(character, prop, newVal) {
+function reduceProp(char, prop, newVal) {
+  let character = Object.assign({}, char);
   if (character && prop && typeof newVal === 'number') {
     const newProp = character.get(prop) - newVal;
     if (newProp < 0) character = character.set(prop, 0);
@@ -310,6 +340,7 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
     currentRow = Math.floor(Math.random() * dimensions), // our current row - start at a random spot
     currentColumn = Math.floor(Math.random() * dimensions), // our current column - start at a random spot
     current_location = [0,0],
+    last_room = null,
     charSet = false,
     directions = [[-1, 0], [1, 0], [0, -1], [0, 1]], // array to get a random direction from (left,right,up,down)
     lastDirection = [], // save the last direction we went
@@ -346,6 +377,7 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
               ((currentColumn === dimensions - 1) && (randomDirection[1] === 1))) {
         break;
       } else {
+        last_room = [currentRow, currentColumn]; // Set last room so we can set the exit.
         // TODO: Figure out events and passing them into create location.
         if (charSet === false) {
           // Set initial character location. Make it a safe zone with no enemies.
@@ -372,6 +404,8 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8, events) {
       maxTunnels--; // we created a whole tunnel so lets decrement how many we have left to create
     }
   }
+  const lRoom = map[last_room[0]][last_room[1]];
+  if (lRoom) map[last_room[0]][last_room[1]] = lRoom.set('exit', true);
   return { map, current_location };
 };
 
@@ -506,7 +540,6 @@ class WorldStore extends ReduceStore {
       case AppActionTypes.REDUCE_WATER:
         return state.set('character', reduceProp(state.get('character'), 'water', action.water));
 
-
       case AppActionTypes.ADD_ITEMS:
         if (Array.isArray(action.itemsToAdd) === true) {
           const character = state.get('character');
@@ -525,11 +558,14 @@ class WorldStore extends ReduceStore {
         }
         return state;
 
-
       case AppActionTypes.REMOVE_ITEMS:
         return state;
 
 
+      case AppActionTypes.LEVEL_UP:
+        const character = state.get('character');
+        return state.set('character', levelUp(character));
+      
       default:
         return state;
     }
