@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 
 
-const ItemType = Immutable.Record({
+export const ItemType = Immutable.Record({
   consumable: true,
   weapon: false,
   armor: false,
@@ -9,7 +9,7 @@ const ItemType = Immutable.Record({
   water: true
 });
 
-const Item = Immutable.Record({
+export const Item = Immutable.Record({
   id: 'manna',
   name: 'Manna',
   description: 'Manna from the heavens. Restores food and water.',
@@ -27,5 +27,3 @@ const Item = Immutable.Record({
   uses: 1, // Number of items an item can be used.
   space: 1 // Amount of space an item takes up in inventory.
 });
-
-export { Item, ItemType };

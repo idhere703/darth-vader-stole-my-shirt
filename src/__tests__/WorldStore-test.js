@@ -1,7 +1,9 @@
 import Immutable from 'immutable';
-import AppActions from '../data/AppActionTypes';
-import WorldStore from '../data/WorldStore';
+import AppActions from '../data/actions/AppActionTypes';
+import rootReducer from '../data/reducers';
 import { Item } from '../data/models/Item';
+
+const WorldStore = createStore(rootReducer);
 
 function getCurrentArea(world) {
   const areas = world.get('areas');
@@ -30,12 +32,9 @@ function getMovementOptions(map, currentLocation) {
 
 describe('World', function() {
   let state = WorldStore.getState();
-  function dispatch(action) {
-    state = WorldStore.reduce(state, action);
-  }
 
   test('Creates game grid with at least one area', function() {
-    const world = state.get('world'); 
+    const world = state.get('world');
     expect(typeof world === 'object').toBe(true);
     expect(Array.isArray(world.areas)).toBe(true);
     expect(world.areas.length > 0).toBe(true);
@@ -70,7 +69,7 @@ describe('World', function() {
     expect(location.get('safe_zone')).toBe(true);
     expect(location.get('enemies').length > 0).toBe(false);
   });
-  
+
   test('Only allows movement to a valid space in the game grid', function() {
     const world = state.get('world');
     const area = getCurrentArea(world);
@@ -113,10 +112,6 @@ describe('World', function() {
 
 describe('Character', function() {
   let state = Immutable.OrderedMap();
-
-  function dispatch(action) {
-    state = WorldStore.reduce(state, action);
-  }
 
   beforeAll(function() {
     dispatch({

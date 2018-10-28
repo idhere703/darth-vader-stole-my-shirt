@@ -1,10 +1,14 @@
 import React from 'react';
+import { createStore } from 'redux';
 import ReactDOM from 'react-dom';
-import AppContainer from './containers/AppContainer';
+import { Provider } from 'react-redux';
+import App from './components/App';
+import rootReducer from './data/reducers';
 import './css/index.css';
 import './css/app.css';
 import './css/world.css';
 import './css/character.css';
 
-export default ReactDOM.render(<AppContainer />, document.getElementById('root'));
+const store = createStore(rootReducer);
 
+export default ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
