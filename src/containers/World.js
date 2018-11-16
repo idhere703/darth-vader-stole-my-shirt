@@ -7,7 +7,7 @@ const mapDispatchToProps = dispatch => ({
     // If we have subactions, dispatch the open.
     if (action.subActions) return dispatch(openSubmenu(actions, action));
     // If we have a final action, run the action.
-    if (typeof action.action === 'function') return action.action();
+    if (typeof action.action === 'function') return dispatch(action.action());
   },
   breadcrumbClicked: (actions, index) => dispatch(breadcrumbClicked(actions, index))
 });

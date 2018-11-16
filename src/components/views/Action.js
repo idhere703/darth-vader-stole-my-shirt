@@ -9,7 +9,7 @@ const Action = ({
   index
 }) => (
   <li
-    key={index}
+    key={`action-${index}`}
     onClick={
       () => runAction(actions, action)
     }

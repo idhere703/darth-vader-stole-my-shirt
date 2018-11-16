@@ -1,4 +1,6 @@
 import React from 'react';
+import { setDescription, changeLocation } from './data/actions';
+
 export function getCurrentArea(world) {
   const areas = world.get('areas');
   const index = areas.findIndex(a => a.floor === world.get('current_floor'));
@@ -23,12 +25,7 @@ export function setActions(currArea, character) {
     subActions: [
       {
         label: 'Room',
-        action: () => {
-          // AppDispatcher.dispatch({
-          //   type: AppActionTypes.SET_DESCRIPTION,
-          //   description: buildRoomDescription(currArea)
-          // });
-        }
+        action: () => setDescription(buildRoomDescription(currArea))
       },
       {
         label: 'Enemies',
@@ -39,12 +36,7 @@ export function setActions(currArea, character) {
         // Should only be calculated on room enter.
         subActions: currLocation.get('enemies').map(e => ({
           label: e.name,
-          action: () => {
-            // AppDispatcher.dispatch({
-            //   type: AppActionTypes.SET_DESCRIPTION,
-            //   description: getEnemyDescription(e)
-            // });
-          }
+          action: () => setDescription(getEnemyDescription(e))
         }))
       },
       {
@@ -54,12 +46,7 @@ export function setActions(currArea, character) {
         },
         subActions: currLocation.get('items').map(i => ({
           label: i.name,
-          action: () => {
-            // AppDispatcher.dispatch({
-            //   type: AppActionTypes.SET_DESCRIPTION,
-            //   description: getItemDescription(i)
-            // });
-          }
+          action: () => setDescription(getItemDescription(i))
         }))
       },
     ],
@@ -109,39 +96,19 @@ export function getMovementOptions(map, currentLocation) {
     {
       label: 'North',
       direction: [currentLocation[0] + 1, currentLocation[1]],
-      action: () => {
-        // AppDispatcher.dispatch({
-        //   type: AppActionTypes.CHANGE_LOCATION,
-        //   newLocation: [currentLocation[0] + 1, currentLocation[1]],
-        // });
-      },
+      action: () => changeLocation([currentLocation[0] + 1, currentLocation[1]])
     }, {
       label: 'East',
       direction: [currentLocation[0], currentLocation[1] + 1],
-      action: () => {
-        // AppDispatcher.dispatch({
-        //   type: AppActionTypes.CHANGE_LOCATION,
-        //   newLocation: [currentLocation[0], currentLocation[1] + 1],
-        // });
-      },
+      action: () => changeLocation([currentLocation[0], currentLocation[1] + 1])
     }, {
       label: 'West',
       direction: [currentLocation[0], currentLocation[1] - 1],
-      action: () => {
-        // AppDispatcher.dispatch({
-        //   type: AppActionTypes.CHANGE_LOCATION,
-        //   newLocation: [currentLocation[0], currentLocation[1] - 1],
-        // });
-      },
+      action: () => changeLocation([currentLocation[0], currentLocation[1] - 1])
     }, {
       label: 'South',
       direction: [currentLocation[0] - 1, currentLocation[1]],
-      action: () => {
-        // AppDispatcher.dispatch({
-        //   type: AppActionTypes.CHANGE_LOCATION,
-        //   newLocation: [currentLocation[0] - 1, currentLocation[1]],
-        // });
-      },
+      action: () => changeLocation([currentLocation[0] - 1, currentLocation[1]])
     }
   ];
   return possibleOptions.filter((option) => {
