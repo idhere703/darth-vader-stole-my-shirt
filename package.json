@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
     "react-scripts": "1.1.4"
   },
   "dependencies": {
@@ -10,15 +15,17 @@
     "immutable": "^3.8.2",
     "jquery": "^3.2.1",
     "moment": "^2.17.1",
+    "prop-types": "^15.6.2",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "react-big-calendar": "^0.17.0",
     "react-datepicker": "^0.41.1",
     "react-dom": "^15.4.2",
+    "react-redux": "^5.1.0",
     "react-scripts": "1.1.4",
     "react-scrollspy": "^2.6.4",
-    "react-sidebar": "^3.0.2",
-    "react-tooltip": "^3.8.0"
+    "react-tooltip": "^3.8.0",
+    "redux": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
