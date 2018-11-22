@@ -52,18 +52,6 @@ export function createCharacter(seed, customProps) {
     seed: Object.assign({}, seed, customProps)
   });
 }
-export function reduceFood(food) {
-  return ({
-    type: AppActionTypes.REDUCE_FOOD,
-    food,
-  });
-}
-export function reduceWater(water) {
-  return ({
-    type: AppActionTypes.REDUCE_WATER,
-    water,
-  });
-}
 export function addItems(items) {
   return ({
     type: AppActionTypes.ADD_ITEMS,

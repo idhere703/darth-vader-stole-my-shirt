@@ -11,5 +11,8 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "allowForLoopAfterthoughts": true,
         "no-plusplus": 0
-    }
+    },
+    "env": {
+        "jest": true
+    }    
 }

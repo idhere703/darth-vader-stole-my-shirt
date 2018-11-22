@@ -5,7 +5,12 @@ import Area from '../models/Area';
 import Location from '../models/Location';
 import Character from '../models/Character';
 import { Item, ItemType } from '../models/Item';
-import { getCurrentArea, setActions, buildRoomDescription } from '../../utils';
+import {
+  getCurrentArea,
+  setActions,
+  buildRoomDescription,
+  changeLocation
+} from '../../utils';
 
 
 function levelUp(character, baseSkillPointIncrease = 5) {
@@ -24,7 +29,7 @@ function levelUp(character, baseSkillPointIncrease = 5) {
     stats[stat] = currStat + (currStat * character.potential[stat]);
     return stats;
   }, {});
-  const newChar = character.merge({
+  const newChar = character.mergeDeep({
     level: newLevel,
     needed_exp: character.get('needed_exp') + (newLevel >= 10 ? (newLevel * (newLevel - 1) / 2) * 1000 : (newLevel * 1000)),
     experience_points: 0,
@@ -33,50 +38,8 @@ function levelUp(character, baseSkillPointIncrease = 5) {
   return newChar;
 }
 
-function changeLocation(state, action) {
-  const s1 = state.updateIn(['world', 'areas'], (areas) => {
-    const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
-    // Only allow update if the space isn't blocked.
-    const currLoc = getLocation(areas[index], action.newLocation);
-    if (isValidLocation(currLoc)) {
-      areas[index] = areas[index].set('current_location', action.newLocation);
-    }
-    return areas;
-  });
-  // Reset actions
-  const s2 = s1.set('actions', setActions(getCurrentArea(s1.get('world')), s1.get('character')));
-  // Reset breadcrumbs
-  const s3 = s2.set('action_breadcrumbs', []);
-  // Build room description.
-  return s3.set('world_description', buildRoomDescription(getCurrentArea(s3.get('world'))));
-}
-
-// Reduce passed prop to no less than zero.
-function reduceProp(char, prop, newVal) {
-  let character = Object.assign({}, char);
-  if (character && prop && typeof newVal === 'number') {
-    const newProp = character.get(prop) - newVal;
-    if (newProp < 0) {
-      character = character.set(prop, 0);
-    } else {
-      character = character.set(prop, newProp);
-    }
-  }
-  return character;
-}
-
-function isValidLocation(location) {
-  return location !== undefined && location !== 1;
-}
-
-function getLocation(area, location) {
-  const locationIndex = location || area.get('current_location');
-  const map = area.get('map');
-  return map[locationIndex[0]] && map[locationIndex[0]][locationIndex[1]];
-}
-
 function createLocation(location = {}, event) {
-  if (typeof event === 'object' && event !== null) return new Location(Object.assign({}, location, event));
+  if (typeof event === 'object' && event !== null) return new Location(Immutable.mergeDeep(location, event));
   // TODO: Build random location information.
   return new Location(location);
 }
@@ -103,28 +66,17 @@ function createArray(num, dimensions) {
 function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8) {
   const map = createArray(1, dimensions);
   // create a 2d array full of 1's
-
   let currentRow = Math.floor(Math.random() * dimensions);
   // our current row - start at a random spot
-
   let currentColumn = Math.floor(Math.random() * dimensions);
   // our current column - start at a random spot
-
   let current_location = [0, 0];
-
-
   let last_room = null;
-
-
   let charSet = false;
-
-
   const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
   // array to get a random direction from (left,right,up,down)
-
   let lastDirection = [];
   // save the last direction we went
-
   let randomDirection; // next turn/direction - holds a value from directions
 
 
@@ -169,7 +121,8 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8) {
           });
           current_location = [currentRow, currentColumn];
           charSet = true;
-        } else {
+          // Don't mess with room if it's already filled.
+        } else if (map[currentRow][currentColumn] === 1) {
           map[currentRow][currentColumn] = createLocation({
             id: `${currentRow},${currentColumn}`
           });
@@ -188,7 +141,9 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8) {
     }
   }
   const lRoom = map[last_room[0]][last_room[1]];
-  if (lRoom) { map[last_room[0]][last_room[1]] = lRoom.set('exit', true); }
+  if (lRoom) {
+    map[last_room[0]][last_room[1]] = lRoom.set('exit', true);
+  }
   return {
     map,
     current_location
@@ -279,7 +234,6 @@ function WorldReducer(state = initialState, action) {
       const chf3 = chf2.set('action_breadcrumbs', []);
       return chf3;
     }
-
     case AppActionTypes.CHANGE_LOCATION:
       return changeLocation(state, action);
 
@@ -291,7 +245,9 @@ function WorldReducer(state = initialState, action) {
       const newActions = state.set('actions', action.clickedAction.subActions);
       const newBread = state.update('action_breadcrumbs', (breadcrumbs) => {
         let aLabel = 'Actions';
-        if (breadcrumbs.length > 0) { aLabel = breadcrumbs[breadcrumbs.length - 1].originalLabel; }
+        if (breadcrumbs.length > 0) {
+          aLabel = breadcrumbs[breadcrumbs.length - 1].originalLabel;
+        }
         breadcrumbs.push({
           bIndex: breadcrumbs.length,
           originalLabel: action.clickedAction.label,
@@ -302,14 +258,11 @@ function WorldReducer(state = initialState, action) {
       });
       return newBread.mergeDeep(newActions);
     }
-
-
     case AppActionTypes.BREADCRUMB_CLICKED: {
       const nActions = state.set('actions', action.actions);
       const nBread = nActions.update('action_breadcrumbs', breadcrumbs => breadcrumbs.slice(0, action.bIndex));
       return nBread;
     }
-
     case AppActionTypes.SET_DESCRIPTION:
       return state.set('world_description', action.description);
 
@@ -317,15 +270,7 @@ function WorldReducer(state = initialState, action) {
     case AppActionTypes.CREATE_CHARACTER:
       return state.set('character', new Character(action.seed));
 
-
-    case AppActionTypes.REDUCE_FOOD:
-      return state.set('character', reduceProp(state.get('character'), 'food', action.food));
-
-
-    case AppActionTypes.REDUCE_WATER:
-      return state.set('character', reduceProp(state.get('character'), 'water', action.water));
-
-      // TODO: Update UI to not allow taking items based on character inventory.
+    // TODO: Update UI to not allow taking items based on character inventory.
     case AppActionTypes.ADD_ITEMS:
       if (Array.isArray(action.itemsToAdd) === true) {
         const character = state.get('character');
@@ -346,7 +291,6 @@ function WorldReducer(state = initialState, action) {
       const character = state.get('character');
       return state.set('character', levelUp(character));
     }
-
     default:
       return state;
   }

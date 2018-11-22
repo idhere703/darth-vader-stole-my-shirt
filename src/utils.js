@@ -1,9 +1,10 @@
 import React from 'react';
-import { setDescription, changeLocation } from './data/actions';
+import { setDescription } from './data/actions';
 
 export function getCurrentArea(world) {
   const areas = world.get('areas');
-  const index = areas.findIndex(a => a.floor === world.get('current_floor'));
+  const currentFloor = world.get('current_floor');
+  const index = areas.findIndex(a => a.floor === currentFloor);
   return areas[index];
 }
 
@@ -246,4 +247,44 @@ export function getPickupOptions(currLocation) {
     });
   }
   return options;
+}
+
+// Reduce passed prop to no less than zero.
+export function reduceProp(char, prop, newVal) {
+  if (char && prop && typeof newVal === 'number') {
+    const newProp = char.get(prop) - newVal;
+    if (newProp < 0) {
+      return char.set(prop, 0);
+    }
+    return char.set(prop, newProp);
+  }
+  return char;
+}
+
+export function changeLocation(state, action) {
+  const s1 = state.updateIn(['world', 'areas'], (areas) => {
+    const index = areas.findIndex(a => a.floor === state.get('world').current_floor);
+    // Only allow update if the space isn't blocked.
+    const currLoc = getLocation(areas[index], action.newLocation);
+    if (isValidLocation(currLoc)) {
+      areas[index] = areas[index].set('current_location', action.newLocation);
+    }
+    return areas;
+  });
+  // Reset actions
+  const s2 = s1.set('actions', setActions(getCurrentArea(s1.get('world')), s1.get('character')));
+  // Reset breadcrumbs
+  const s3 = s2.set('action_breadcrumbs', []);
+  // Build room description.
+  return s3.set('world_description', buildRoomDescription(getCurrentArea(s3.get('world'))));
+}
+
+export function isValidLocation(location) {
+  return location !== undefined && location !== 1;
+}
+
+export function getLocation(area, location) {
+  const locationIndex = location || area.get('current_location');
+  const map = area.get('map');
+  return map[locationIndex[0]] && map[locationIndex[0]][locationIndex[1]];
 }
