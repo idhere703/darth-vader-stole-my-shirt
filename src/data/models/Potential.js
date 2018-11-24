@@ -14,6 +14,7 @@ const Potential = Immutable.Record({
   stealth: 0.003,
   perception: 0.01,
   speed: 0.1,
+  accuracy: 0.1
 });
 
 

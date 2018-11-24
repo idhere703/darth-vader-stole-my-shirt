@@ -13,6 +13,7 @@ function WorldView({
 }) {
   const currArea = getCurrentArea(world);
   const currLocation = getCurrentLocation(currArea);
+  // TODO: Auto scroll to bottom of description. https://github.com/fisshy/react-scroll
   return (
     <section>
       <section className="world__content">

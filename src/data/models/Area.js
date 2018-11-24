@@ -5,7 +5,7 @@ const Area = Immutable.Record({
   map: [
     [new Location()],
   ],
-  current_location: [0,0],
+  current_location: [0, 0],
   // Grassland might have less water cost associated with movement than say a desert.
   movement_cost: {
     food: 10,

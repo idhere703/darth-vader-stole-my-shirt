@@ -28,7 +28,7 @@ function Actions({
               if (a.visible !== undefined) return a.visible(currLocation);
               return true;
             }).map((a, i) => (
-              <Action key={a.label} runAction={runAction} action={a} actions={actions} index={i} />
+              <Action key={`${a.label}-${i}`} runAction={runAction} action={a} actions={actions} index={i} />
             ))}
         </ul>
       </section>

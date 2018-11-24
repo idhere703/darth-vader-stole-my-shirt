@@ -1,12 +1,5 @@
 import AppActionTypes from './AppActionTypes';
-
-export function createWorld(seed) {
-  return ({
-    type: AppActionTypes.CREATE_WORLD,
-    seed,
-  });
-}
-export function changeLocation(newLocation) {
+export function changeLocationAction(newLocation) {
   return ({
     type: AppActionTypes.CHANGE_LOCATION,
     newLocation
@@ -62,5 +55,13 @@ export function removeItems(items) {
   return ({
     type: AppActionTypes.REMOVE_ITEMS,
     itemsToRemove: items
+  });
+}
+
+export function basicAttackAction(actor, targetId) {
+  return ({
+    type: AppActionTypes.BASIC_ATTACK,
+    targetId,
+    actor
   });
 }

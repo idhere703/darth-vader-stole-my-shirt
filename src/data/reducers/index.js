@@ -6,37 +6,8 @@ import Location from '../models/Location';
 import Character from '../models/Character';
 import { Item, ItemType } from '../models/Item';
 import {
-  getCurrentArea,
-  setActions,
-  buildRoomDescription,
-  changeLocation
+ getCurrentArea, setActions, buildRoomDescription, changeLocation, levelUp, basicAttack 
 } from '../../utils';
-
-
-function levelUp(character, baseSkillPointIncrease = 5) {
-  // If the amount of exp doesn't match up to what we need. Just return.
-  if (character.experience_points < character.needed_exp) return character;
-  // Increase level by one.
-  const newLevel = parseInt(character.get('level'), 10) + 1;
-  // Increase skill points by the base and wisdom / 3.
-  const currSkillPoints = character.get('skill_points');
-  const newSkillPoints = currSkillPoints + baseSkillPointIncrease + (character.get('wisdom') / 3);
-  // Get a list of all the stats to increase.
-  const statIncreases = [
-    'attack', 'defense', 'health', 'max_health', 'wisdom', 'stealth', 'perception', 'speed',
-  ].reduce((stats, stat) => {
-    const currStat = character[stat];
-    stats[stat] = currStat + (currStat * character.potential[stat]);
-    return stats;
-  }, {});
-  const newChar = character.mergeDeep({
-    level: newLevel,
-    needed_exp: character.get('needed_exp') + (newLevel >= 10 ? (newLevel * (newLevel - 1) / 2) * 1000 : (newLevel * 1000)),
-    experience_points: 0,
-    skill_points: newSkillPoints
-  }, statIncreases);
-  return newChar;
-}
 
 function createLocation(location = {}, event) {
   if (typeof event === 'object' && event !== null) return new Location(Immutable.mergeDeep(location, event));
@@ -79,7 +50,6 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8) {
   // save the last direction we went
   let randomDirection; // next turn/direction - holds a value from directions
 
-
   // lets create some tunnels - while maxTunnels, dimentions, and maxLength  is greater than 0.
   while (maxTunnels && dimensions && maxLength) {
     // lets get a random direction - until it is a perpendicular to our lastDirection
@@ -121,10 +91,18 @@ function createMap(dimensions = 20, maxTunnels = 50, maxLength = 8) {
           });
           current_location = [currentRow, currentColumn];
           charSet = true;
-          // Don't mess with room if it's already filled.
+        // Don't mess with room if it's already filled.
         } else if (map[currentRow][currentColumn] === 1) {
           map[currentRow][currentColumn] = createLocation({
-            id: `${currentRow},${currentColumn}`
+            id: `${currentRow},${currentColumn}`,
+            enemies: [
+              new Character({
+                id: `enemy1-${currentRow},${currentColumn}`
+              }),
+              new Character({
+                id: `enemy2-${currentRow},${currentColumn}`
+              })
+            ] // TODO: Write function to fill room with enemies.
           });
         }
         // add the value from randomDirection to row and col (-1, 0, or 1) to update our location
@@ -222,10 +200,6 @@ const initialState = getInitialState();
 
 function WorldReducer(state = initialState, action) {
   switch (action.type) {
-    case AppActionTypes.CREATE_WORLD:
-      // TODO: Set Actions.
-      return state.set('world', buildWorld(action.seed));
-
     case AppActionTypes.CHANGE_FLOOR: {
       const chf1 = state.setIn(['world', 'current_floor'], action.newFloor);
       // Reset actions
@@ -239,7 +213,6 @@ function WorldReducer(state = initialState, action) {
 
     case AppActionTypes.SET_ACTIONS:
       return state.set('actions', setActions(action.currArea), state.get('character'));
-
 
     case AppActionTypes.OPEN_SUB_MENU: {
       const newActions = state.set('actions', action.clickedAction.subActions);
@@ -266,7 +239,6 @@ function WorldReducer(state = initialState, action) {
     case AppActionTypes.SET_DESCRIPTION:
       return state.set('world_description', action.description);
 
-
     case AppActionTypes.CREATE_CHARACTER:
       return state.set('character', new Character(action.seed));
 
@@ -286,10 +258,22 @@ function WorldReducer(state = initialState, action) {
 
     case AppActionTypes.REMOVE_ITEMS:
       return state;
-
     case AppActionTypes.LEVEL_UP: {
       const character = state.get('character');
       return state.set('character', levelUp(character));
+    }
+    case AppActionTypes.BASIC_ATTACK: {
+      // Perform Attack
+      const { world, world_description } = basicAttack(state, action);
+      // Reset Actions
+      const actions = setActions(getCurrentArea(world), state.get('character'));
+      const action_breadcrumbs = [];
+      // Update world description with results.
+      return state
+        .set('actions', actions)
+        .set('action_breadcrumbs', action_breadcrumbs)
+        .set('world', world)
+        .set('world_description', [world_description]);
     }
     default:
       return state;

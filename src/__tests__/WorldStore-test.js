@@ -1,8 +1,11 @@
 import { createStore } from 'redux';
 import rootReducer from '../data/reducers';
 import { Item } from '../data/models/Item';
-import { changeLocation, removeItems, addItems } from '../data/actions';
-import { getMovementOptions, getCurrentArea, getCurrentLocation } from '../utils';
+import Character from '../data/models/Character';
+import { changeLocationAction, removeItems, addItems } from '../data/actions';
+import {
+  getMovementOptions, getCurrentArea, getCurrentLocation, levelUp, attackCharacter
+} from '../utils';
 
 const WorldStore = createStore(rootReducer);
 
@@ -50,7 +53,7 @@ describe('World', () => {
     const world = state.get('world');
     const area = getCurrentArea(world);
     const expected = area.get('current_location');
-    WorldStore.dispatch(changeLocation([-1, -1]));
+    WorldStore.dispatch(changeLocationAction([-1, -1]));
     expect(area.get('current_location')).toBe(expected);
   });
 
@@ -59,7 +62,7 @@ describe('World', () => {
     const area = getCurrentArea(world);
     const expected = area.get('current_location');
     const options = getMovementOptions(area.get('map'), expected);
-    WorldStore.dispatch(changeLocation(options[0]));
+    WorldStore.dispatch(changeLocationAction(options[0]));
     expect(area.get('current_location')).toBe(expected);
   });
 
@@ -98,7 +101,7 @@ describe('Character', () => {
   test('It fails to add items greater than the inventory limit', () => {
     const item = new Item();
     const oldItemLength = state.getIn(['character', 'items']).length;
-    WorldStore(addItems([item, item, item, item, item, item]));
+    WorldStore.dispatch(addItems([item, item, item, item, item, item]));
     const items = state.getIn(['character', 'items']);
     expect(items.length).toBe(oldItemLength);
   });
@@ -110,18 +113,25 @@ describe('Character', () => {
     expect(items.length).toBeLessThan(oldItems.length);
   });
 
-  test('It levels up the character and adds additional stats', () => {
-    // const character = state.get('character');
-    expect(true).toBe(false);
+  test('It levels up the character and adds additional skill points', () => {
+    const character = state.get('character');
+    const newChar = levelUp(character.set('experience_points', character.get('needed_exp')));
+    expect(newChar.get('level')).toBeGreaterThan(character.get('level'));
+    expect(newChar.get('skill_points')).toBeGreaterThan(character.get('skill_points'));
   });
 
-  test('It fails to decrease skill points by decimal values', () => {
-    expect(true).toBe(false);
+  test('Should return a target with reduced health', () => {
+    const character = state.get('character');
+    const enemy = new Character();
+    const enemyAfterAttack = attackCharacter(character, enemy, {
+      attType: 'basic',
+      baseHit: 10000 // HACK: To ensure we get the same result every time.
+    });
+    expect(enemyAfterAttack.get('health')).toBeLessThan(enemy.get('health'));
   });
-  test('It decreases skill points by integer values', () => {
-    expect(true).toBe(false);
+
+  test('Should return a new state object without a killed enemy', () => {
   });
-  test('It increases skill points by decimal or integer values', () => {
-    expect(true).toBe(false);
+  test('Should return a new state object with killed enemy drops', () => {
   });
 });

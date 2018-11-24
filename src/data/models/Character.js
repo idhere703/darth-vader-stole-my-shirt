@@ -24,6 +24,7 @@ const Character = Immutable.Record({
   stealth: 0.03,
   perception: 1,
   speed: 10,
+  accuracy: 10,
   max_food: 100,
   food: 100,
   max_water: 100,
