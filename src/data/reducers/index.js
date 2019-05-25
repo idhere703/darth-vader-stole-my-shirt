@@ -6,7 +6,7 @@ import Location from '../models/Location';
 import Character from '../models/Character';
 import { Item, ItemType } from '../models/Item';
 import {
- getCurrentArea, setActions, buildRoomDescription, changeLocation, levelUp, basicAttack 
+  getCurrentArea, setActions, buildRoomDescription, changeLocation, levelUp, basicAttack
 } from '../../utils';
 
 function createLocation(location = {}, event) {
@@ -269,6 +269,7 @@ function WorldReducer(state = initialState, action) {
       const actions = setActions(getCurrentArea(world), state.get('character'));
       const action_breadcrumbs = [];
       // Update world description with results.
+      // TODO: Add in enemy attack.
       return state
         .set('actions', actions)
         .set('action_breadcrumbs', action_breadcrumbs)

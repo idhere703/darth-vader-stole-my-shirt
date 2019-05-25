@@ -392,7 +392,7 @@ export function attackCharacter(actor, target, action) {
             target: afterDamage,
             description: (
               <p key={key}>
-                {`Attacked ${target.name} for ${damage} damage.\n${target.name} H(${afterDamage.health})`}
+                {`Damaged ${target.name} for ${damage} damage.\n${target.name} H(${afterDamage.health})`}
               </p>
             )
           };
